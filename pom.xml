@@ -3,10 +3,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openjfx</groupId>
-	<artifactId>hellofx</artifactId>
+	<artifactId>video-capture-processor</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>demo</name>
+	<name>Video Capture Processor</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -74,7 +74,7 @@
 				<artifactId>javafx-maven-plugin</artifactId>
 				<version>0.0.3</version>
 				<configuration>
-					<mainClass>com.wheezy.template.HelloFX</mainClass>
+					<mainClass>com.wheezy.apps.vidcapproc.VideoCaptureProcessor</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
