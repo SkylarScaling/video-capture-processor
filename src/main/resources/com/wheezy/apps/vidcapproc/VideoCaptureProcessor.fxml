@@ -41,7 +41,7 @@
       </effect>
     </Label>
     <JFXButton fx:id="settingsButton" layoutX="12.0" layoutY="19.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="7.0"
-      text="">
+      text="" onAction="#openSettingsDialog">
       <graphic>
         <ImageView fitHeight="37.0" fitWidth="7.0" pickOnBounds="true" preserveRatio="true">
           <image>
@@ -53,8 +53,7 @@
         </ImageView>
       </graphic>
     </JFXButton>
-    <JFXButton fx:id="gameButton" layoutX="29.0" layoutY="19.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="64.0"
-      prefWidth="64.0" text="">
+    <JFXButton fx:id="gameButton" layoutX="29.0" layoutY="19.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="64.0" prefWidth="64.0" text="">
       <graphic>
         <ImageView fitHeight="64.0" fitWidth="64.0">
           <image>

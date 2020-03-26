@@ -27,22 +27,9 @@ public class VideoCaptureProcessorGUIController implements Initializable
     // TODO (don't really need to do anything here).
   }
 
-  // When user click on myButton
-  // this method will be called.
-  public void showDateTime(ActionEvent event)
+  public void openSettingsDialog(ActionEvent event)
   {
     System.out.println("Button Clicked!");
-
-    Date now = new Date();
-
-    DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS");
-
-    // Model Data
-    String dateTimeString = df.format(now);
-
-    // Show in VIEW
-    myTextField.setText(dateTimeString);
-
+    
   }
-
 }
