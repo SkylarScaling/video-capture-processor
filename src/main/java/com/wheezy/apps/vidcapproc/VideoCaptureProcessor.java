@@ -17,8 +17,9 @@ public class VideoCaptureProcessor extends Application
       // Read file fxml and draw interface.
       Parent root = FXMLLoader.load(getClass().getResource("VideoCaptureProcessor.fxml"));
 
-      primaryStage.setTitle("Hell World FX!");
+      primaryStage.setTitle("Wheezy VCP");
       primaryStage.setScene(new Scene(root));
+      primaryStage.setResizable(false);
       primaryStage.show();
 
     }
