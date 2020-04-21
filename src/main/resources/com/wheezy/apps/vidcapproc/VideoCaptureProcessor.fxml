@@ -10,7 +10,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="193.0" prefWidth="260.0"
   style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-  fx:controller="com.wheezy.apps.vidcapproc.VideoCaptureProcessorGUIController">
+  fx:controller="com.wheezy.apps.vidcapproc.controller.VideoCaptureProcessorGUIController">
   <children>
     <JFXButton fx:id="markClipButton" buttonType="RAISED" layoutX="117.0" layoutY="19.0" prefHeight="47.0" prefWidth="126.0"
       style="-fx-background-color: #1b8fd1ff;" text="Mark Clip" textAlignment="CENTER">
