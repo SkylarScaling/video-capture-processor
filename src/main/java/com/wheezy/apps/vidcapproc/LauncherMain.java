@@ -1,9 +1,9 @@
-package com.wheezy.template;
+package com.wheezy.apps.vidcapproc;
 
 public class LauncherMain 
 {
 	public static void main(String[] args)
 	{
-		HelloFX.main(args);
+		VideoCaptureProcessor.main(args);
 	}
 }
