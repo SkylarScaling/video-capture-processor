@@ -1,25 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXScrollPane?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.InnerShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="303.0" prefWidth="481.0"
-	xmlns="http://javafx.com/javafx/11.0.1"
-	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="com.wheezy.apps.vidcapproc.controller.GameSelectorDialogController">
+<AnchorPane prefHeight="460.0" prefWidth="481.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wheezy.apps.vidcapproc.controller.GameSelectorDialogController">
 	<children>
-		<FlowPane fx:id="quickSelectFlowPane" alignment="CENTER_LEFT"
-			layoutX="14.0" layoutY="38.0" prefHeight="78.0" prefWidth="455.0"
-			style="-fx-background-color: #FFFFFFBB; -fx-background-radius: 3;"
-			AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0"
-			AnchorPane.topAnchor="38.0">
+		<FlowPane fx:id="quickSelectFlowPane" alignment="CENTER_LEFT" layoutX="14.0" layoutY="38.0" prefHeight="78.0" prefWidth="455.0" style="-fx-background-color: #FFFFFFBB; -fx-background-radius: 3;" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="38.0">
 			<effect>
 				<DropShadow color="#00000016" offsetY="3.0" spread="0.41" />
 			</effect>
@@ -27,12 +20,33 @@
 				<Insets bottom="9.0" left="9.0" right="9.0" top="9.0" />
 			</padding>
 		</FlowPane>
-		<Label fx:id="quickSelectLabel" layoutX="14.0" layoutY="12.0"
-			prefHeight="17.0" prefWidth="79.0" text="Quick Select"
-			AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="12.0">
+		<Label fx:id="quickSelectLabel" layoutX="14.0" layoutY="12.0" prefHeight="17.0" prefWidth="79.0" text="Quick Select" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="12.0">
 			<font>
 				<Font name="Montserrat Regular" size="12.0" />
 			</font>
 		</Label>
+      <Label fx:id="allGamesLabel" layoutX="20.0" layoutY="134.0" prefHeight="17.0" prefWidth="79.0" text="All Games">
+         <font>
+            <Font name="Montserrat Regular" size="12.0" />
+         </font>
+      </Label>
+      <JFXScrollPane fx:id="gameScrollPane" layoutX="20.0" layoutY="159.0" prefHeight="234.0" prefWidth="441.0">
+         <effect>
+            <InnerShadow />
+         </effect>
+         <children>
+            <FlowPane fx:id="allGamesFlowPane" prefHeight="200.0" prefWidth="200.0" />
+         </children>
+      </JFXScrollPane>
+      <JFXButton fx:id="doneButton" buttonType="RAISED" layoutX="417.0" layoutY="422.0" style="-fx-background-color: #fefefeff;" text="Done">
+         <font>
+            <Font name="Montserrat Regular" size="12.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="manageGamesButton" buttonType="RAISED" layoutX="20.0" layoutY="422.0" style="-fx-background-color: #fefefeff;" text="Manage Games ...">
+         <font>
+            <Font name="Montserrat Regular" size="12.0" />
+         </font>
+      </JFXButton>
 	</children>
 </AnchorPane>

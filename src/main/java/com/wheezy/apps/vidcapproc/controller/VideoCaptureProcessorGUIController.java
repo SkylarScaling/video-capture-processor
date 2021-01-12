@@ -80,4 +80,10 @@ public class VideoCaptureProcessorGUIController implements Initializable
       e.printStackTrace();
     }
   }
+  
+  @FXML
+  void cleanupFiles(ActionEvent event)
+  {
+    System.out.println("Cleanup Clicked!");
+  }
 }
