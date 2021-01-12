@@ -19,7 +19,6 @@ public class VideoCaptureProcessor extends Application
 
       primaryStage.setTitle("Wheezy VCP");
       primaryStage.setScene(new Scene(root));
-      primaryStage.setResizable(false);
       primaryStage.show();
 
     }
@@ -33,5 +32,4 @@ public class VideoCaptureProcessor extends Application
   {
     launch(args);
   }
-
 }

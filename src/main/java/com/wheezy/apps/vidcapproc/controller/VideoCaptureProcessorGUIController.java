@@ -68,7 +68,6 @@ public class VideoCaptureProcessorGUIController implements Initializable
     try
     {
       parent = fxmlLoader.load();
-      GameSelectorDialogController dialogController = fxmlLoader.<GameSelectorDialogController>getController();
       Scene scene = new Scene(parent);
       Stage stage = new Stage();
       stage.initModality(Modality.APPLICATION_MODAL);
