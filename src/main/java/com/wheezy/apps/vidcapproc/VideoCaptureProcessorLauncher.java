@@ -1,6 +1,6 @@
 package com.wheezy.apps.vidcapproc;
 
-public class LauncherMain 
+public class VideoCaptureProcessorLauncher 
 {
 	public static void main(String[] args)
 	{

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity"
+	minHeight="-Infinity" minWidth="-Infinity" prefHeight="183.0"
+	prefWidth="265.0" style="-fx-background-color: white;"
+	xmlns="http://javafx.com/javafx/11.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="com.wheezy.apps.vidcapproc.controller.VideoCaptureProcessorGUIController">
+	<children>
+		<VBox fx:id="buttonVBox" alignment="CENTER" layoutX="117.0"
+			layoutY="14.0" AnchorPane.leftAnchor="117.0"
+			AnchorPane.topAnchor="14.0">
+			<children>
+				<JFXButton fx:id="markClipButton" buttonType="RAISED"
+					prefHeight="47.0" prefWidth="126.0"
+					style="-fx-background-color: #1b8fd1ff;" text="Mark Clip"
+					textAlignment="CENTER">
+					<font>
+						<Font name="Montserrat Bold" size="18.0" />
+					</font>
+					<VBox.margin>
+						<Insets bottom="5.0" />
+					</VBox.margin>
+				</JFXButton>
+				<Label text="Tag: Tag Text">
+					<font>
+						<Font name="Montserrat Regular" size="15.0" />
+					</font>
+					<effect>
+						<DropShadow color="#0000004c" />
+					</effect>
+					<padding>
+						<Insets bottom="5.0" />
+					</padding>
+				</Label>
+				<JFXButton fx:id="saveButton" buttonType="RAISED"
+					prefHeight="47.0" prefWidth="126.0"
+					style="-fx-background-color: #6ed11bff;" text="Save..."
+					textAlignment="CENTER">
+					<font>
+						<Font name="Montserrat Bold" size="18.0" />
+					</font>
+				</JFXButton>
+			</children>
+		</VBox>
+		<Label layoutX="81.0" layoutY="163.0" text="Clip Marked: 1:35"
+			AnchorPane.bottomAnchor="14.666666666666666">
+			<font>
+				<Font name="Montserrat Regular" size="12.0" />
+			</font>
+			<effect>
+				<DropShadow color="#0000004d" />
+			</effect>
+		</Label>
+		<JFXButton fx:id="settingsButton" layoutX="12.0"
+			layoutY="19.0" minHeight="-Infinity" minWidth="-Infinity"
+			onAction="#openSettingsDialog" prefHeight="37.0" prefWidth="7.0"
+			text="" AnchorPane.leftAnchor="13.0" AnchorPane.topAnchor="14.0">
+			<graphic>
+				<ImageView fitHeight="37.0" fitWidth="7.0"
+					pickOnBounds="true" preserveRatio="true">
+					<image>
+						<Image url="@../icons/more-vertical.png" />
+					</image>
+					<effect>
+						<DropShadow color="#00000081" />
+					</effect>
+				</ImageView>
+			</graphic>
+		</JFXButton>
+		<JFXButton fx:id="gameButton" layoutX="29.0" layoutY="19.0"
+			minHeight="-Infinity" minWidth="-Infinity"
+			onAction="#openGameSelectorDialog" prefHeight="64.0" prefWidth="64.0"
+			text="" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="14.0">
+			<graphic>
+				<ImageView fitHeight="64.0" fitWidth="64.0">
+					<image>
+						<Image url="@../icons/default.jpg" />
+					</image>
+					<effect>
+						<DropShadow color="#00000081" />
+					</effect>
+				</ImageView>
+			</graphic>
+		</JFXButton>
+		<JFXButton fx:id="cleanupButton" layoutX="15.0"
+			layoutY="149.0" minHeight="-Infinity" minWidth="-Infinity"
+			prefHeight="28.0" prefWidth="28.0" text=""
+			AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="15.0">
+			<graphic>
+				<ImageView fitHeight="28.0" fitWidth="28.0">
+					<image>
+						<Image url="@../icons/trash.png" />
+					</image>
+					<effect>
+						<DropShadow color="#00000080" />
+					</effect>
+				</ImageView>
+			</graphic>
+		</JFXButton>
+		<FlowPane fx:id="gameSelectorFlowPane" layoutX="20.0"
+			layoutY="153.0" prefHeight="98.0" prefWidth="363.0"
+			AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+	</children>
+</AnchorPane>

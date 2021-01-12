@@ -38,13 +38,37 @@ public class VideoCaptureProcessorGUIController implements Initializable
   {
     System.out.println("Button Clicked!");
     
-    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../VCPSettingsDialog.fxml"));
+    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../ui/VCPSettingsDialog.fxml"));
     Parent parent;
     try
     {
       parent = fxmlLoader.load();
       VCPSettingsDialogController dialogController = fxmlLoader.<VCPSettingsDialogController>getController();
       dialogController.setVCPSettings(vcpSettings);
+      Scene scene = new Scene(parent);
+      Stage stage = new Stage();
+      stage.initModality(Modality.APPLICATION_MODAL);
+      stage.setScene(scene);
+      stage.showAndWait();
+    }
+    catch (IOException e)
+    {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+  
+  @FXML
+  void openGameSelectorDialog(ActionEvent event)
+  {
+    System.out.println("Game Selector Clicked!");
+    
+    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../ui/GameSelectorDialog.fxml"));
+    Parent parent;
+    try
+    {
+      parent = fxmlLoader.load();
+      GameSelectorDialogController dialogController = fxmlLoader.<GameSelectorDialogController>getController();
       Scene scene = new Scene(parent);
       Stage stage = new Stage();
       stage.initModality(Modality.APPLICATION_MODAL);
