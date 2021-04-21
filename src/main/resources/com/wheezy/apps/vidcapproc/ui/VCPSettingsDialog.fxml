@@ -73,7 +73,7 @@
 				</TextField>
 				<JFXButton buttonType="RAISED"
 					style="-fx-background-color: #fefefeff;" text="Browse..."
-					GridPane.columnIndex="2" GridPane.halignment="RIGHT">
+					GridPane.columnIndex="2" GridPane.halignment="RIGHT" onAction="#openFileBrowser">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>
@@ -81,7 +81,7 @@
 				<JFXButton buttonType="RAISED"
 					style="-fx-background-color: #fefefeff;" text="Browse..."
 					GridPane.columnIndex="2" GridPane.halignment="RIGHT"
-					GridPane.rowIndex="1">
+					GridPane.rowIndex="1" onAction="#openFileBrowser">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>
@@ -89,7 +89,7 @@
 				<JFXButton buttonType="RAISED"
 					style="-fx-background-color: #fefefeff;" text="Browse..."
 					GridPane.columnIndex="2" GridPane.halignment="RIGHT"
-					GridPane.rowIndex="2">
+					GridPane.rowIndex="2" onAction="#openFileBrowser">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>

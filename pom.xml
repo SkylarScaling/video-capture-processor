@@ -16,15 +16,21 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
-			<version>15</version>
+			<version>16</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.openjfx/javafx-fxml -->
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-fxml</artifactId>
-			<version>15</version>
+			<version>16</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jfoenix</groupId>
@@ -35,6 +41,11 @@
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 			<version>2.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.wheezy.components</groupId>
+			<artifactId>java-components</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>
