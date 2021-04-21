@@ -10,9 +10,16 @@
 	<url>https://github.com/SkylarScaling</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>15</maven.compiler.source>
-		<maven.compiler.target>15</maven.compiler.target>
+		<maven.compiler.source>13</maven.compiler.source>
+		<maven.compiler.target>13</maven.compiler.target>
 	</properties>
+	
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -43,9 +50,9 @@
 			<version>2.3.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.wheezy.components</groupId>
+			<groupId>com.github.SkylarScaling</groupId>
 			<artifactId>java-components</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>main-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>
