@@ -71,25 +71,25 @@
 						<Insets left="15.0" right="15.0" />
 					</GridPane.margin>
 				</TextField>
-				<JFXButton buttonType="RAISED"
+				<JFXButton fx:id="captureDirButton" buttonType="RAISED"
 					style="-fx-background-color: #fefefeff;" text="Browse..."
-					GridPane.columnIndex="2" GridPane.halignment="RIGHT" onAction="#openFileBrowser">
+					GridPane.columnIndex="2" GridPane.halignment="RIGHT" onAction="#browseForCaptureDirectory">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>
 				</JFXButton>
-				<JFXButton buttonType="RAISED"
+				<JFXButton fx:id="keepersDirButton" buttonType="RAISED"
 					style="-fx-background-color: #fefefeff;" text="Browse..."
 					GridPane.columnIndex="2" GridPane.halignment="RIGHT"
-					GridPane.rowIndex="1" onAction="#openFileBrowser">
+					GridPane.rowIndex="1" onAction="#browseForKeepersDirectory">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>
 				</JFXButton>
-				<JFXButton buttonType="RAISED"
+				<JFXButton fx:id="clipsDirButton" buttonType="RAISED"
 					style="-fx-background-color: #fefefeff;" text="Browse..."
 					GridPane.columnIndex="2" GridPane.halignment="RIGHT"
-					GridPane.rowIndex="2" onAction="#openFileBrowser">
+					GridPane.rowIndex="2" onAction="#browseForClipsDirectory">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>

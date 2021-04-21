@@ -36,13 +36,13 @@ public class VideoCaptureProcessorGUIController extends FXMLController
     try
     {
       parent = fxmlLoader.load();
-      VCPSettingsDialogController settingsDialogController = fxmlLoader.<VCPSettingsDialogController>getController();
-      settingsDialogController.setVCPSettings(vcpSettings);
       Scene scene = new Scene(parent);
       Stage stage = new Stage();
       stage.initModality(Modality.APPLICATION_MODAL);
       stage.setScene(scene);
 
+      VCPSettingsDialogController settingsDialogController = fxmlLoader.<VCPSettingsDialogController>getController();
+      settingsDialogController.setVCPSettings(vcpSettings);
       settingsDialogController.setStage(stage);
 
       stage.showAndWait();

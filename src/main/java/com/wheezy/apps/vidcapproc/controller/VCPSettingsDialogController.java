@@ -6,10 +6,10 @@ import java.util.ResourceBundle;
 
 import com.wheezy.apps.vidcapproc.data.VCPSettings;
 import com.wheezy.components.controller.FXMLController;
+import com.wheezy.utils.file.FileUtility;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.stage.DirectoryChooser;
 
 public class VCPSettingsDialogController extends FXMLController
 {
@@ -32,14 +32,32 @@ public class VCPSettingsDialogController extends FXMLController
   }
 
   @FXML
-  void openFileBrowser(ActionEvent event)
+  void browseForCaptureDirectory(ActionEvent event)
   {
-    DirectoryChooser directoryChooser = new DirectoryChooser();
-    directoryChooser.setTitle("Select Directory");
-    File selectedDirectory = directoryChooser.showDialog(getStage());
+    File selectedDirectory = FileUtility.browseForDirectory(getStage(), "Select Capture Directory");
     if (selectedDirectory != null)
     {
-      // TODO Set Directory
+      vcpSettings.setCaptureDirectory(selectedDirectory);
+    }
+  }
+
+  @FXML
+  void browseForKeepersDirectory(ActionEvent event)
+  {
+    File selectedDirectory = FileUtility.browseForDirectory(getStage(), "Select Keepers Directory");
+    if (selectedDirectory != null)
+    {
+      vcpSettings.setCaptureDirectory(selectedDirectory);
+    }
+  }
+
+  @FXML
+  void browseForClipsDirectory(ActionEvent event)
+  {
+    File selectedDirectory = FileUtility.browseForDirectory(getStage(), "Select Clips Directory");
+    if (selectedDirectory != null)
+    {
+      vcpSettings.setCaptureDirectory(selectedDirectory);
     }
   }
 }
