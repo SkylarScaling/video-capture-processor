@@ -17,9 +17,9 @@
 	prefWidth="600.0" style="-fx-background-color: white;"
 	xmlns="http://javafx.com/javafx/11.0.1"
 	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="com.wheezy.apps.vidcapproc.controller.VCPSettingsDialogController">
+	fx:controller="com.wheezy.apps.vidcapproc.controller.VideoCaptureProcessorSettingsDialogController">
 	<children>
-		<GridPane layoutX="10.0" layoutY="10.0" prefHeight="187.0"
+		<GridPane layoutX="10.0" layoutY="10.0" prefHeight="167.0"
 			prefWidth="581.0" AnchorPane.leftAnchor="15.0"
 			AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="10.0">
 			<columnConstraints>
@@ -37,47 +37,40 @@
 					vgrow="SOMETIMES" />
 				<RowConstraints minHeight="10.0" prefHeight="30.0"
 					vgrow="SOMETIMES" />
-				<RowConstraints minHeight="10.0" prefHeight="30.0"
-					vgrow="SOMETIMES" />
 			</rowConstraints>
 			<children>
-				<Label text="Clips Folder:" GridPane.rowIndex="2">
-					<font>
-						<Font name="Montserrat Regular" size="12.0" />
-					</font>
-				</Label>
-				<Label text="Keepers Folder:" GridPane.rowIndex="1">
-					<font>
-						<Font name="Montserrat Regular" size="12.0" />
-					</font>
-				</Label>
 				<Label text="Capture Folder:">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>
 				</Label>
-				<TextField GridPane.columnIndex="1">
-					<GridPane.margin>
-						<Insets left="15.0" right="15.0" />
-					</GridPane.margin>
-				</TextField>
-				<TextField GridPane.columnIndex="1" GridPane.rowIndex="1">
-					<GridPane.margin>
-						<Insets left="15.0" right="15.0" />
-					</GridPane.margin>
-				</TextField>
-				<TextField GridPane.columnIndex="1" GridPane.rowIndex="2">
+
+				<TextField fx:id="captureTextField"
+					GridPane.columnIndex="1">
 					<GridPane.margin>
 						<Insets left="15.0" right="15.0" />
 					</GridPane.margin>
 				</TextField>
 				<JFXButton fx:id="captureDirButton" buttonType="RAISED"
 					style="-fx-background-color: #fefefeff;" text="Browse..."
-					GridPane.columnIndex="2" GridPane.halignment="RIGHT" onAction="#browseForCaptureDirectory">
+					GridPane.columnIndex="2" GridPane.halignment="RIGHT"
+					onAction="#browseForCaptureDirectory">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>
 				</JFXButton>
+
+				<Label text="Keepers Folder:" GridPane.rowIndex="1">
+					<font>
+						<Font name="Montserrat Regular" size="12.0" />
+					</font>
+				</Label>
+				<TextField fx:id="keepersTextField"
+					GridPane.columnIndex="1" GridPane.rowIndex="1">
+					<GridPane.margin>
+						<Insets left="15.0" right="15.0" />
+					</GridPane.margin>
+				</TextField>
 				<JFXButton fx:id="keepersDirButton" buttonType="RAISED"
 					style="-fx-background-color: #fefefeff;" text="Browse..."
 					GridPane.columnIndex="2" GridPane.halignment="RIGHT"
@@ -86,14 +79,7 @@
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>
 				</JFXButton>
-				<JFXButton fx:id="clipsDirButton" buttonType="RAISED"
-					style="-fx-background-color: #fefefeff;" text="Browse..."
-					GridPane.columnIndex="2" GridPane.halignment="RIGHT"
-					GridPane.rowIndex="2" onAction="#browseForClipsDirectory">
-					<font>
-						<Font name="Montserrat Regular" size="12.0" />
-					</font>
-				</JFXButton>
+
 				<JFXCheckBox text="Always On Top" GridPane.rowIndex="3">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
@@ -108,13 +94,15 @@
 			AnchorPane.rightAnchor="15.0">
 			<children>
 				<JFXButton buttonType="RAISED"
-					style="-fx-background-color: #fefefeff;" text="Save">
+					style="-fx-background-color: #fefefeff;" text="Save"
+					onAction="#saveSettings">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>
 				</JFXButton>
 				<JFXButton buttonType="RAISED"
-					style="-fx-background-color: #fefefeff;" text="Cancel">
+					style="-fx-background-color: #fefefeff;" text="Cancel"
+					onAction="#closeDialog">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>

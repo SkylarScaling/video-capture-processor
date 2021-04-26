@@ -3,7 +3,6 @@ package com.wheezy.apps.vidcapproc.controller;
 import java.io.IOException;
 
 import com.jfoenix.controls.JFXButton;
-import com.wheezy.apps.vidcapproc.data.VCPSettings;
 import com.wheezy.components.controller.FXMLController;
 
 import javafx.event.ActionEvent;
@@ -24,14 +23,12 @@ public class VideoCaptureProcessorGUIController extends FXMLController
   @FXML
   private TextField myTextField;
 
-  private VCPSettings vcpSettings;
-
   @FXML
   void openSettingsDialog(ActionEvent event)
   {
     System.out.println("Button Clicked!");
 
-    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../ui/VCPSettingsDialog.fxml"));
+    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../ui/VideoCaptureProcessorSettingsDialog.fxml"));
     Parent parent;
     try
     {
@@ -41,8 +38,7 @@ public class VideoCaptureProcessorGUIController extends FXMLController
       stage.initModality(Modality.APPLICATION_MODAL);
       stage.setScene(scene);
 
-      VCPSettingsDialogController settingsDialogController = fxmlLoader.<VCPSettingsDialogController>getController();
-      settingsDialogController.setVCPSettings(vcpSettings);
+      VideoCaptureProcessorSettingsDialogController settingsDialogController = fxmlLoader.<VideoCaptureProcessorSettingsDialogController>getController();
       settingsDialogController.setStage(stage);
 
       stage.showAndWait();
