@@ -43,6 +43,8 @@ public class VideoCaptureProcessorSettingsDialogController extends FXMLControlle
     }
     catch (IOException ioe)
     {
+      //TODO Abstract alert utility
+      //https://code.makery.ch/blog/javafx-dialogs-official/
       Alert alert = new Alert(AlertType.ERROR);
       alert.setTitle("Error Reading Properties");
       alert.setHeaderText("An error was encountered while reading from the properties file.");
