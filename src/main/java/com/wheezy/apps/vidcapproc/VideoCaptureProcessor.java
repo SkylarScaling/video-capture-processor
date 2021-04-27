@@ -1,10 +1,9 @@
 package com.wheezy.apps.vidcapproc;
 
+import com.wheezy.apps.vidcapproc.ui.VideoCaptureProcessorResources;
+import com.wheezy.apps.vidcapproc.ui.components.VideoCaptureProcessorStage;
+
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class VideoCaptureProcessor extends Application
@@ -15,13 +14,8 @@ public class VideoCaptureProcessor extends Application
   {
     try
     {
-      // Read file fxml and draw interface.
-      Parent root = FXMLLoader.load(getClass().getResource("ui/VideoCaptureProcessor.fxml"));
-
-      primaryStage.setTitle("Wheezy's VCP");
-      primaryStage.getIcons().add(new Image(
-          getClass().getClassLoader().getResourceAsStream("com/wheezy/apps/vidcapproc/icons/VCPAppIcon.png")));
-      primaryStage.setScene(new Scene(root));
+      primaryStage = new VideoCaptureProcessorStage(VideoCaptureProcessorResources.VIDEO_CAPTURE_PROCESSOR_FXML,
+          "Wheezy's VCP", false);
       primaryStage.show();
     }
     catch (Exception e)
