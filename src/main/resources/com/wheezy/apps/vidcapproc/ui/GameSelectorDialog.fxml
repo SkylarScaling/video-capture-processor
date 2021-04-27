@@ -13,7 +13,7 @@
 <AnchorPane prefHeight="460.0" prefWidth="481.0"
 	xmlns="http://javafx.com/javafx/11.0.1"
 	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="com.wheezy.apps.vidcapproc.controller.GameSelectorDialogController">
+	fx:controller="com.wheezy.apps.vidcapproc.controller.GameSelectorController">
 	<children>
 		<FlowPane fx:id="quickSelectFlowPane" alignment="CENTER_LEFT"
 			layoutX="14.0" layoutY="38.0" prefHeight="78.0" prefWidth="455.0"

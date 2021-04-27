@@ -8,20 +8,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import com.wheezy.apps.vidcapproc.data.VideoCaptureProcessorProperties;
 import com.wheezy.apps.vidcapproc.data.VideoCaptureProcessorProperties.CaptureProcessorProperties;
-import com.wheezy.components.controller.FXMLController;
+import com.wheezy.components.FXMLController;
 import com.wheezy.utils.file.FileUtility;
+import com.wheezy.utils.ui.AlertDialog;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 
-public class VideoCaptureProcessorSettingsDialogController extends FXMLController
+public class VideoCaptureProcessorSettingsController extends FXMLController
 {
-  private static Logger logger = Logger.getLogger(VideoCaptureProcessorSettingsDialogController.class.getName());
+  private static Logger logger = Logger.getLogger(VideoCaptureProcessorSettingsController.class.getName());
+
+  private VideoCaptureProcessorProperties propertiesInstance;
 
   @FXML
   private TextField captureTextField;
@@ -31,26 +33,17 @@ public class VideoCaptureProcessorSettingsDialogController extends FXMLControlle
   private JFXButton captureDirButton;
   @FXML
   private JFXButton keepersDirButton;
-
-  private VideoCaptureProcessorProperties propertiesInstance;
+  @FXML
+  private JFXCheckBox alwaysOnTopCheckBox;
 
   @Override
   public void initialize(URL location, ResourceBundle resources)
   {
-    try
-    {
-      propertiesInstance = VideoCaptureProcessorProperties.getInstance();
-    }
-    catch (IOException ioe)
-    {
-      //TODO Abstract alert utility
-      //https://code.makery.ch/blog/javafx-dialogs-official/
-      Alert alert = new Alert(AlertType.ERROR);
-      alert.setTitle("Error Reading Properties");
-      alert.setHeaderText("An error was encountered while reading from the properties file.");
-      alert.setContentText(ioe.getMessage());
-      logger.log(Level.SEVERE, "Property Read Error", ioe);
-    }
+    propertiesInstance = VideoCaptureProcessorProperties.getInstance();
+    
+    captureTextField.setText(propertiesInstance.getProperty(CaptureProcessorProperties.CAPTURE_LOCATION_PROPERTY.getName()));
+    keepersTextField.setText(propertiesInstance.getProperty(CaptureProcessorProperties.KEEPERS_LOCATION_PROPERTY.getName()));
+    alwaysOnTopCheckBox.setSelected(Boolean.parseBoolean(propertiesInstance.getProperty(CaptureProcessorProperties.ALWAYS_ON_TOP_PROPERTY.getName())));
   }
 
   @FXML
@@ -81,6 +74,9 @@ public class VideoCaptureProcessorSettingsDialogController extends FXMLControlle
 
     propertiesInstance.setProperty(CaptureProcessorProperties.KEEPERS_LOCATION_PROPERTY.getName(),
         keepersTextField.getText());
+    
+    propertiesInstance.setProperty(CaptureProcessorProperties.ALWAYS_ON_TOP_PROPERTY.getName(), 
+        Boolean.toString(alwaysOnTopCheckBox.isSelected()));
 
     try
     {
@@ -88,10 +84,10 @@ public class VideoCaptureProcessorSettingsDialogController extends FXMLControlle
     }
     catch (IOException ioe)
     {
-      Alert alert = new Alert(AlertType.ERROR);
-      alert.setTitle("Error Saving Properties");
-      alert.setHeaderText("An error prevented settings from being saved.");
-      alert.setContentText(ioe.getMessage());
+      AlertDialog.displayErrorDialog("Error Saving Properties", 
+          "An error prevented settings from being saved.", 
+          ioe.getMessage());
+      
       logger.log(Level.SEVERE, "Property Save Error", ioe);
     }
 

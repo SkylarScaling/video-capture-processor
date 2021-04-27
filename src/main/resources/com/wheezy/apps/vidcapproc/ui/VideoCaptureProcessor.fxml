@@ -11,9 +11,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="183.0" prefWidth="265.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wheezy.apps.vidcapproc.controller.VideoCaptureProcessorGUIController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="183.0" prefWidth="265.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wheezy.apps.vidcapproc.controller.VideoCaptureProcessorController">
 	<children>
-		<VBox fx:id="buttonVBox" alignment="CENTER" layoutX="117.0" layoutY="14.0" AnchorPane.leftAnchor="117.0" AnchorPane.topAnchor="14.0">
+		<VBox alignment="CENTER" layoutX="117.0" layoutY="14.0" AnchorPane.leftAnchor="117.0" AnchorPane.topAnchor="14.0">
 			<children>
 				<JFXButton fx:id="markClipButton" buttonType="RAISED" prefHeight="47.0" prefWidth="126.0" style="-fx-background-color: #1b8fd1ff;" text="Mark Clip" textAlignment="CENTER">
 					<font>

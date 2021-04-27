@@ -1,7 +1,5 @@
 package com.wheezy.apps.vidcapproc.data;
 
-import java.io.IOException;
-
 import com.wheezy.utils.file.properties.PropertiesUtility;
 
 public class VideoCaptureProcessorProperties extends PropertiesUtility
@@ -33,12 +31,12 @@ public class VideoCaptureProcessorProperties extends PropertiesUtility
     }
   }
   
-  public VideoCaptureProcessorProperties() throws IOException
+  public VideoCaptureProcessorProperties()
   {
     super(CONFIG_FILENAME);
   }
 
-  public static VideoCaptureProcessorProperties getInstance() throws IOException
+  public static VideoCaptureProcessorProperties getInstance()
   {
     if (instance == null)
     {
