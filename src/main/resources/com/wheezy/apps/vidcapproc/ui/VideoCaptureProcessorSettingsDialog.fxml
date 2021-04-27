@@ -102,7 +102,7 @@
 				</JFXButton>
 				<JFXButton buttonType="RAISED"
 					style="-fx-background-color: #fefefeff;" text="Cancel"
-					onAction="#closeDialog">
+					onAction="#close">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>

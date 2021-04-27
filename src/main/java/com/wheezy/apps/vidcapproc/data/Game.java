@@ -12,134 +12,135 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Game
 {
-    private String gameTitle;
-    private String filenameLabel;
-    private String iconImageFilepath;
-    private boolean isDisplayed;
+  private String gameTitle;
+  private String filenameLabel;
+  private String iconImageFilepath;
+  private boolean isDisplayed;
 
-    public Game()
+  public Game()
+  {
+  }
+
+  @XmlElement
+  public String getGameTitle()
+  {
+    return gameTitle;
+  }
+
+  public void setGameTitle(String gameTitle)
+  {
+    this.gameTitle = gameTitle;
+  }
+
+  @XmlElement
+  public String getFilenameLabel()
+  {
+    return filenameLabel;
+  }
+
+  public void setFilenameLabel(String filenameLabel)
+  {
+    this.filenameLabel = filenameLabel;
+  }
+
+  @XmlElement
+  public String getIconImageFilepath()
+  {
+    return iconImageFilepath;
+  }
+
+  public void setIconImageFilepath(String iconImageFilepath)
+  {
+    this.iconImageFilepath = iconImageFilepath;
+  }
+
+  @XmlElement
+  public boolean isDisplayed()
+  {
+    return isDisplayed;
+  }
+
+  public void setDisplayed(boolean isDisplayed)
+  {
+    this.isDisplayed = isDisplayed;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (obj instanceof Game && ((Game) obj).getGameTitle() != null)
     {
+      if (gameTitle != null)
+      {
+        return gameTitle.equalsIgnoreCase(((Game) obj).getGameTitle());
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    if (gameTitle != null)
+    {
+      return gameTitle.hashCode();
     }
 
-    @XmlElement
-    public String getGameTitle()
-    {
-        return gameTitle;
-    }
+    return super.hashCode();
+  }
 
-    public void setGameTitle(String gameTitle)
-    {
-        this.gameTitle = gameTitle;
-    }
+  @Override
+  public String toString()
+  {
+    return "Game Title [" + this.gameTitle + "], Filename Label [" + this.filenameLabel + "], Icon Image Filepath ["
+        + this.iconImageFilepath + "]";
+  }
 
-    @XmlElement
-    public String getFilenameLabel()
-    {
-        return filenameLabel;
-    }
+  public static void main(String[] args) throws Throwable
+  {
+    // =============================================================================================================
+    // Setup JAXB
+    // =============================================================================================================
 
-    public void setFilenameLabel(String filenameLabel)
-    {
-        this.filenameLabel = filenameLabel;
-    }
+    // Create a JAXB context passing in the class of the object we want to
+    // marshal/unmarshal
+    JAXBContext context = JAXBContext.newInstance(Game.class);
 
-    @XmlElement
-    public String getIconImageFilepath()
-    {
-        return iconImageFilepath;
-    }
+    // =============================================================================================================
+    // Marshalling OBJECT to XML
+    // =============================================================================================================
 
-    public void setIconImageFilepath(String iconImageFilepath)
-    {
-        this.iconImageFilepath = iconImageFilepath;
-    }
+    // Create the marshaller, this is the nifty little thing that will actually
+    // transform the object into XML
+    Marshaller marshaller = context.createMarshaller();
 
-    @XmlElement
-    public boolean isDisplayed()
-    {
-        return isDisplayed;
-    }
+    // Create a stringWriter to hold the XML
+    StringWriter stringWriter = new StringWriter();
 
-    public void setDisplayed(boolean isDisplayed)
-    {
-        this.isDisplayed = isDisplayed;
-    }
+    // Create the sample object we wish to transform into XML
+    Game game = new Game();
+    game.setGameTitle("Black Ops");
+    game.setFilenameLabel("BO");
+    game.setIconImageFilepath("/images/BlackOps.jpg");
 
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (obj instanceof Game && ((Game) obj).getGameTitle() != null)
-        {
-            if (gameTitle != null)
-            {
-                return gameTitle.equalsIgnoreCase(((Game) obj).getGameTitle());
-            }
-        }
-        return false;
-    }
+    // Marshal the javaObject and write the XML to the stringWriter
+    marshaller.marshal(game, stringWriter);
 
-    @Override
-    public int hashCode()
-    {
-        if (gameTitle != null)
-        {
-            return gameTitle.hashCode();
-        }
+    // Print out the contents of the stringWriter
+    System.out.println(stringWriter.toString());
 
-        return super.hashCode();
-    }
+    // =============================================================================================================
+    // Unmarshalling XML to OBJECT
+    // =============================================================================================================
 
-    @Override
-    public String toString()
-    {
-        return "Game Title [" + this.gameTitle +
-                "], Filename Label [" + this.filenameLabel +
-                "], Icon Image Filepath [" + this.iconImageFilepath + "]";
-    }
+    // Create the unmarshaller, this is the nifty little thing that will actually
+    // transform the XML back into an object
+    Unmarshaller unmarshaller = context.createUnmarshaller();
 
-    public static void main(String[] args) throws Throwable
-    {
-        // =============================================================================================================
-        // Setup JAXB
-        // =============================================================================================================
+    // Unmarshal the XML in the stringWriter back into an object
+    Game javaObject2 = (Game) unmarshaller.unmarshal(new StringReader(stringWriter.toString()));
 
-        // Create a JAXB context passing in the class of the object we want to marshal/unmarshal
-        JAXBContext context = JAXBContext.newInstance(Game.class);
-
-        // =============================================================================================================
-        // Marshalling OBJECT to XML
-        // =============================================================================================================
-
-        // Create the marshaller, this is the nifty little thing that will actually transform the object into XML
-        Marshaller marshaller = context.createMarshaller();
-
-        // Create a stringWriter to hold the XML
-        StringWriter stringWriter = new StringWriter();
-
-        // Create the sample object we wish to transform into XML
-        Game game = new Game();
-        game.setGameTitle("Black Ops");
-        game.setFilenameLabel("BO");
-        game.setIconImageFilepath("/images/BlackOps.jpg");
-
-        // Marshal the javaObject and write the XML to the stringWriter
-        marshaller.marshal(game, stringWriter);
-
-        // Print out the contents of the stringWriter
-        System.out.println(stringWriter.toString());
-
-        // =============================================================================================================
-        // Unmarshalling XML to OBJECT
-        // =============================================================================================================
-
-        // Create the unmarshaller, this is the nifty little thing that will actually transform the XML back into an object
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-
-        // Unmarshal the XML in the stringWriter back into an object
-        Game javaObject2 = (Game) unmarshaller.unmarshal(
-                new StringReader(stringWriter.toString()));
-
-        // Print out the contents of the JavaObject we just unmarshalled from the XML
-        System.out.println(javaObject2.toString());
-    }
+    // Print out the contents of the JavaObject we just unmarshalled from the XML
+    System.out.println(javaObject2.toString());
+  }
 }

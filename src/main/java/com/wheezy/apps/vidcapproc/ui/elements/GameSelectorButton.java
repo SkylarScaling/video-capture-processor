@@ -2,13 +2,15 @@ package com.wheezy.apps.vidcapproc.ui.elements;
 
 import com.jfoenix.controls.JFXButton;
 import com.wheezy.apps.vidcapproc.data.Game;
+import com.wheezy.apps.vidcapproc.ui.VideoCaptureProcessorResources;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.text.Font;
+import javafx.scene.paint.Color;
 
 public class GameSelectorButton extends JFXButton
 {
@@ -31,8 +33,6 @@ public class GameSelectorButton extends JFXButton
 
     this.game = game;
 
-    this.setFont(new Font("Montserrat Regular", 12.0));
-
     MenuItem editGameMenuItem = new MenuItem("Edit...");
     editGameMenuItem.setOnAction((event) -> {
       // GameEditor gameEditor =
@@ -42,11 +42,17 @@ public class GameSelectorButton extends JFXButton
     });
     rightClickMenu.getItems().add(editGameMenuItem);
 
-    if (game.getIconImageFilepath() != null)
-    {
-      this.setGraphic(new ImageView(new Image(game.getIconImageFilepath())));
-    }
-    this.game = game;
+    ImageView imageView = new ImageView();
+    imageView.setImage(new Image(getClass().getClassLoader()
+        .getResourceAsStream(game.getIconImageFilepath() == null ? VideoCaptureProcessorResources.DEFAULT_GAME_ICON_PATH
+            : game.getIconImageFilepath())));
+    imageView.setFitHeight(64);
+    imageView.setFitWidth(64);
+    DropShadow dropShadow = new DropShadow();
+    dropShadow.setColor(new Color(00, 00, 00, 0.5));
+    imageView.setEffect(new DropShadow());
+    this.setGraphic(imageView);
+
     this.setTooltip(new Tooltip(game.getGameTitle()));
     this.setPrefSize(GAME_BUTTON_WIDTH, GAME_BUTTON_HEIGHT);
   }
@@ -64,5 +70,12 @@ public class GameSelectorButton extends JFXButton
   public void unselected()
   {
     setStyle(UNSELECTED_BUTTON_STYLE);
+  }
+
+  public void updateFrom(GameSelectorButton fromButton)
+  {
+    this.game = fromButton.game;
+    this.setGraphic(fromButton.getGraphic());
+    this.rightClickMenu = fromButton.rightClickMenu;
   }
 }

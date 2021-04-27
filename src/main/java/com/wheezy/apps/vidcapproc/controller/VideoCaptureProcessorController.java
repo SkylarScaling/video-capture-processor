@@ -6,22 +6,24 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.jfoenix.controls.JFXButton;
 import com.wheezy.apps.vidcapproc.data.VideoCaptureProcessorProperties;
 import com.wheezy.apps.vidcapproc.ui.VideoCaptureProcessorResources;
 import com.wheezy.apps.vidcapproc.ui.components.VideoCaptureProcessorStage;
+import com.wheezy.apps.vidcapproc.ui.elements.GameSelectorButton;
 import com.wheezy.components.FXMLController;
 import com.wheezy.utils.ui.AlertDialog;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
 
 public class VideoCaptureProcessorController extends FXMLController
 {
   private static Logger logger = Logger.getLogger(VideoCaptureProcessorController.class.getName());
 
   private VideoCaptureProcessorProperties propertiesInstance;
+  
+  @FXML  
+  private GameSelectorButton gameButton;
 
   @Override
   public void initialize(URL location, ResourceBundle resources)
@@ -41,12 +43,6 @@ public class VideoCaptureProcessorController extends FXMLController
       logger.log(Level.SEVERE, "Property Read Error", ioe);
     }
   }
-
-  @FXML
-  private JFXButton settingsButton;
-
-  @FXML
-  private TextField myTextField;
 
   @FXML
   void openSettingsDialog(ActionEvent event)

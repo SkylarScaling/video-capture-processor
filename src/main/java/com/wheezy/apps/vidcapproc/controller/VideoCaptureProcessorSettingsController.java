@@ -91,12 +91,6 @@ public class VideoCaptureProcessorSettingsController extends FXMLController
       logger.log(Level.SEVERE, "Property Save Error", ioe);
     }
 
-    closeDialog(event);
-  }
-
-  @FXML
-  void closeDialog(ActionEvent event)
-  {
-    getStage().close();
+    close(event);
   }
 }
