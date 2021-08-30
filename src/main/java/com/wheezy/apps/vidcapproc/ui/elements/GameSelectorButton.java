@@ -16,8 +16,8 @@ public class GameSelectorButton extends JFXButton
 {
   private static final String SELECTED_BUTTON_STYLE = "-fx-border-width: 4; -fx-border-color: #FF0000FF;";
   private static final String UNSELECTED_BUTTON_STYLE = "-fx-border-width: 0;";
-  private static final double GAME_BUTTON_WIDTH = 74.0;
-  private static final double GAME_BUTTON_HEIGHT = 74.0;
+  private static final double GAME_BUTTON_WIDTH = 84.0;
+  private static final double GAME_BUTTON_HEIGHT = 84.0;
 
   private Game game;
   private ContextMenu rightClickMenu = new ContextMenu();
@@ -46,8 +46,8 @@ public class GameSelectorButton extends JFXButton
     imageView.setImage(new Image(getClass().getClassLoader()
         .getResourceAsStream(game.getIconImageFilepath() == null ? VideoCaptureProcessorResources.DEFAULT_GAME_ICON_PATH
             : game.getIconImageFilepath())));
-    imageView.setFitHeight(64);
-    imageView.setFitWidth(64);
+    imageView.setFitHeight(GAME_BUTTON_HEIGHT - 10);
+    imageView.setFitWidth(GAME_BUTTON_WIDTH- 10);
     DropShadow dropShadow = new DropShadow();
     dropShadow.setColor(new Color(00, 00, 00, 0.5));
     imageView.setEffect(new DropShadow());

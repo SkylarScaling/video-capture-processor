@@ -12,25 +12,16 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity"
-	minHeight="-Infinity" minWidth="-Infinity" prefHeight="183.0"
-	prefWidth="265.0" style="-fx-background-color: white;"
-	xmlns="http://javafx.com/javafx/11.0.1"
-	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="com.wheezy.apps.vidcapproc.controller.VideoCaptureProcessorController">
+<AnchorPane prefHeight="205.0" prefWidth="277.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wheezy.apps.vidcapproc.controller.VideoCaptureProcessorController">
 	<children>
-		<VBox alignment="CENTER" layoutX="117.0" layoutY="14.0"
-			AnchorPane.leftAnchor="117.0" AnchorPane.topAnchor="14.0">
+		<VBox alignment="CENTER" layoutX="125.0" AnchorPane.leftAnchor="125.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="0.0">
 			<children>
-				<JFXButton fx:id="markClipButton" buttonType="RAISED"
-					prefHeight="47.0" prefWidth="126.0"
-					style="-fx-background-color: #1b8fd1ff;" text="Mark Clip"
-					textAlignment="CENTER">
+				<JFXButton fx:id="markClipButton" buttonType="RAISED" prefHeight="47.0" prefWidth="126.0" style="-fx-background-color: #1b8fd1ff;" text="Mark Clip" textAlignment="CENTER">
 					<font>
 						<Font name="Montserrat Bold" size="18.0" />
 					</font>
 					<VBox.margin>
-						<Insets bottom="5.0" />
+						<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
 					</VBox.margin>
 				</JFXButton>
 				<Label text="Tag: Tag Text">
@@ -44,30 +35,30 @@
 						<Insets bottom="5.0" />
 					</padding>
 				</Label>
-				<JFXButton fx:id="saveButton" buttonType="RAISED"
-					prefHeight="47.0" prefWidth="126.0"
-					style="-fx-background-color: #6ed11bff;" text="Save..."
-					textAlignment="CENTER">
+				<JFXButton fx:id="saveButton" buttonType="RAISED" prefHeight="47.0" prefWidth="126.0" style="-fx-background-color: #6ed11bff;" text="Save..." textAlignment="CENTER">
 					<font>
 						<Font name="Montserrat Bold" size="18.0" />
 					</font>
 				</JFXButton>
 			</children>
+         <padding>
+            <Insets bottom="15.0" top="15.0" />
+         </padding>
 		</VBox>
-		<Label layoutX="81.0" layoutY="163.0" text="Clip Marked: 1:35"
-			AnchorPane.bottomAnchor="14.666666666666666">
+		<Label alignment="CENTER" text="Clip Marked: 1:35" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
 			<font>
 				<Font name="Montserrat Regular" size="12.0" />
 			</font>
 			<effect>
 				<DropShadow color="#0000004d" />
 			</effect>
+         <padding>
+            <Insets bottom="15.0" top="15.0" />
+         </padding>
 		</Label>
-		<StackPane prefHeight="37.0" prefWidth="7.0"
-			AnchorPane.leftAnchor="13.0" AnchorPane.topAnchor="14.0">
+		<StackPane prefHeight="37.0" prefWidth="7.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<children>
-				<ImageView fitHeight="37.0" fitWidth="7.0"
-					pickOnBounds="true" preserveRatio="true">
+				<ImageView fitHeight="37.0" fitWidth="7.0" pickOnBounds="true" preserveRatio="true">
 					<image>
 						<Image url="@../icons/more-vertical.png" />
 					</image>
@@ -75,26 +66,26 @@
 						<DropShadow color="#00000081" />
 					</effect>
 				</ImageView>
-				<JFXButton fx:id="settingsButton" alignment="CENTER"
-					contentDisplay="CENTER" graphicTextGap="0.0" minHeight="-Infinity"
-					minWidth="-Infinity" onAction="#openSettingsDialog"
-					prefHeight="37.0" prefWidth="7.0" text="" />
+				<JFXButton fx:id="settingsButton" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" onAction="#openSettingsDialog" prefHeight="37.0" prefWidth="7.0" text="" />
 			</children>
+         <padding>
+            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+         </padding>
 		</StackPane>
-		<StackPane prefHeight="74.0" prefWidth="74.0"
-			AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="14.0">
+		<StackPane prefHeight="84.0" prefWidth="84.0" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="0.0">
 			<children>
-				<GameSelectorButton fx:id="gameButton"
-					contentDisplay="CENTER" graphicTextGap="0.0" minHeight="-Infinity"
-					minWidth="-Infinity" onAction="#openGameSelectorDialog" text=" " />
+				<GameSelectorButton fx:id="gameButton" contentDisplay="CENTER" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" onAction="#openGameSelectorDialog" text=" ">
+               <StackPane.margin>
+                  <Insets />
+               </StackPane.margin></GameSelectorButton>
 			</children>
+         <padding>
+            <Insets bottom="15.0" right="15.0" top="15.0" />
+         </padding>
 		</StackPane>
-		<StackPane layoutX="6.0" layoutY="147.0" prefHeight="20.0"
-			prefWidth="20.0" AnchorPane.bottomAnchor="10.0"
-			AnchorPane.leftAnchor="9.0">
+		<StackPane layoutX="6.0" layoutY="147.0" prefHeight="20.0" prefWidth="20.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="9.0">
 			<children>
-				<ImageView fitHeight="28.0" fitWidth="28.0"
-					pickOnBounds="true" preserveRatio="true">
+				<ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
 					<image>
 						<Image url="@../icons/trash.png" />
 					</image>
@@ -102,10 +93,7 @@
 						<DropShadow color="#00000081" />
 					</effect>
 				</ImageView>
-				<JFXButton fx:id="cleanupButton" alignment="CENTER"
-					contentDisplay="CENTER" ellipsisString="" graphicTextGap="0.0"
-					minHeight="-Infinity" minWidth="-Infinity" onAction="#cleanupFiles"
-					prefHeight="28.0" prefWidth="28.0" text=" " textAlignment="CENTER" />
+				<JFXButton fx:id="cleanupButton" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" onAction="#cleanupFiles" prefHeight="28.0" prefWidth="28.0" text=" " textAlignment="CENTER" />
 			</children>
 		</StackPane>
 	</children>
