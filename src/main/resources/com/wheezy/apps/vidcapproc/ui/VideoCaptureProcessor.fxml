@@ -35,7 +35,7 @@
 						<Insets bottom="5.0" />
 					</padding>
 				</Label>
-				<JFXButton fx:id="saveButton" buttonType="RAISED" prefHeight="47.0" prefWidth="126.0" style="-fx-background-color: #6ed11bff;" text="Save..." textAlignment="CENTER">
+				<JFXButton fx:id="saveButton" onAction="#saveVideo" buttonType="RAISED" prefHeight="47.0" prefWidth="126.0" style="-fx-background-color: #6ed11bff;" text="Save..." textAlignment="CENTER">
 					<font>
 						<Font name="Montserrat Bold" size="18.0" />
 					</font>
@@ -66,7 +66,7 @@
 						<DropShadow color="#00000081" />
 					</effect>
 				</ImageView>
-				<JFXButton fx:id="settingsButton" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" onAction="#openSettingsDialog" prefHeight="37.0" prefWidth="7.0" text="" />
+				<JFXButton fx:id="settingsButton" onAction="#openSettingsDialog" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="7.0" text="" />
 			</children>
          <padding>
             <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
@@ -74,7 +74,7 @@
 		</StackPane>
 		<StackPane prefHeight="84.0" prefWidth="84.0" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="0.0">
 			<children>
-				<GameSelectorButton fx:id="gameButton" contentDisplay="CENTER" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" onAction="#openGameSelectorDialog" text=" ">
+				<GameSelectorButton fx:id="gameButton" onAction="#openGameSelectorDialog" contentDisplay="CENTER" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" text=" ">
                <StackPane.margin>
                   <Insets />
                </StackPane.margin></GameSelectorButton>
@@ -93,7 +93,7 @@
 						<DropShadow color="#00000081" />
 					</effect>
 				</ImageView>
-				<JFXButton fx:id="cleanupButton" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" onAction="#cleanupFiles" prefHeight="28.0" prefWidth="28.0" text=" " textAlignment="CENTER" />
+				<JFXButton fx:id="cleanupButton" onAction="#cleanupFiles" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="28.0" prefWidth="28.0" text=" " textAlignment="CENTER" />
 			</children>
 		</StackPane>
 	</children>

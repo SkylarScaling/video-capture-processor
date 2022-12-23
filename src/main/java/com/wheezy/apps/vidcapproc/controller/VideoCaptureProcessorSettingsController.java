@@ -9,8 +9,8 @@ import java.util.logging.Logger;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
-import com.wheezy.apps.vidcapproc.data.VideoCaptureProcessorProperties;
-import com.wheezy.apps.vidcapproc.data.VideoCaptureProcessorProperties.CaptureProcessorProperties;
+import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperties;
+import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperty;
 import com.wheezy.components.FXMLController;
 import com.wheezy.utils.file.FileUtility;
 import com.wheezy.utils.ui.AlertDialog;
@@ -41,9 +41,9 @@ public class VideoCaptureProcessorSettingsController extends FXMLController
   {
     propertiesInstance = VideoCaptureProcessorProperties.getInstance();
     
-    captureTextField.setText(propertiesInstance.getProperty(CaptureProcessorProperties.CAPTURE_LOCATION_PROPERTY.getName()));
-    keepersTextField.setText(propertiesInstance.getProperty(CaptureProcessorProperties.KEEPERS_LOCATION_PROPERTY.getName()));
-    alwaysOnTopCheckBox.setSelected(Boolean.parseBoolean(propertiesInstance.getProperty(CaptureProcessorProperties.ALWAYS_ON_TOP_PROPERTY.getName())));
+    captureTextField.setText(propertiesInstance.getProperty(VideoCaptureProcessorProperty.CAPTURE_LOCATION_PROPERTY));
+    keepersTextField.setText(propertiesInstance.getProperty(VideoCaptureProcessorProperty.KEEPERS_LOCATION_PROPERTY));
+    alwaysOnTopCheckBox.setSelected(Boolean.parseBoolean(propertiesInstance.getProperty(VideoCaptureProcessorProperty.ALWAYS_ON_TOP_PROPERTY)));
   }
 
   @FXML
@@ -69,13 +69,13 @@ public class VideoCaptureProcessorSettingsController extends FXMLController
   @FXML
   void saveSettings(ActionEvent event)
   {
-    propertiesInstance.setProperty(CaptureProcessorProperties.CAPTURE_LOCATION_PROPERTY.getName(),
+    propertiesInstance.setProperty(VideoCaptureProcessorProperty.CAPTURE_LOCATION_PROPERTY,
         captureTextField.getText());
 
-    propertiesInstance.setProperty(CaptureProcessorProperties.KEEPERS_LOCATION_PROPERTY.getName(),
+    propertiesInstance.setProperty(VideoCaptureProcessorProperty.KEEPERS_LOCATION_PROPERTY,
         keepersTextField.getText());
     
-    propertiesInstance.setProperty(CaptureProcessorProperties.ALWAYS_ON_TOP_PROPERTY.getName(), 
+    propertiesInstance.setProperty(VideoCaptureProcessorProperty.ALWAYS_ON_TOP_PROPERTY, 
         Boolean.toString(alwaysOnTopCheckBox.isSelected()));
 
     try

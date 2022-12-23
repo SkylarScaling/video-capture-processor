@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXDrawer?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="821.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wheezy.apps.vidcapproc.controller.ButtonPanelController">
+   <children>
+      <JFXButton fx:id="keepersButton" buttonType="RAISED" layoutX="39.0" layoutY="34.0" onAction="#saveKeeper" text="Keepers" />
+      <JFXButton fx:id="clipsButton" buttonType="RAISED" layoutX="120.0" layoutY="34.0" onAction="#saveClip" text="Clips" />
+      <JFXButton fx:id="cleanupButton" buttonType="RAISED" layoutX="182.0" layoutY="34.0" onAction="#cleanupFiles" text="Cleanup" />
+      <JFXButton fx:id="markClipButton" buttonType="RAISED" layoutX="268.0" layoutY="34.0" onAction="#markClip" text="Mark Clip" />
+      <JFXButton fx:id="noGameButton" buttonType="RAISED" layoutX="43.0" layoutY="149.0" text="No game" />
+      <JFXButton fx:id="game1Button" buttonType="RAISED" layoutX="162.0" layoutY="149.0" text="Game 1" />
+      <JFXButton fx:id="game2Button" buttonType="RAISED" layoutX="274.0" layoutY="149.0" text="Game 2" />
+      <TextField fx:id="clipTextField" layoutX="23.0" layoutY="207.0" promptText="Enter clip text" />
+      <JFXDrawer direction="RIGHT" layoutX="370.0" layoutY="33.0" prefHeight="334.0" prefWidth="199.0" AnchorPane.rightAnchor="150.0">
+         <children>
+            <Pane prefHeight="50.0" prefWidth="183.0">
+               <children>
+                  <JFXCheckBox layoutX="14.0" layoutY="35.0" />
+                  <Label layoutX="14.0" layoutY="6.0" text="Clip Tags" />
+                  <JFXCheckBox layoutX="14.0" layoutY="62.0" />
+                  <JFXCheckBox layoutX="14.0" layoutY="87.0" />
+                  <JFXButton buttonType="RAISED" layoutX="243.0" layoutY="11.0" text="Edit..." />
+               </children>
+            </Pane>
+         </children>
+      </JFXDrawer>
+   </children>
+</AnchorPane>
