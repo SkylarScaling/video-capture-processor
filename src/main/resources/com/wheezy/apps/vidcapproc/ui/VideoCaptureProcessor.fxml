@@ -19,35 +19,35 @@
 	<children>
 		<VBox alignment="CENTER" layoutX="125.0" AnchorPane.leftAnchor="125.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="0.0">
 			<children>
-				<Button fx:id="markClipButton" onAction="#markClip" prefHeight="47.0" prefWidth="126.0" style="-fx-background-color: #1b8fd1ff;" text="Mark Clip" textAlignment="CENTER">
-					<font>
-						<Font name="Montserrat Bold" size="18.0" />
-					</font>
-					<VBox.margin>
-						<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-					</VBox.margin>
-				</Button>
-				<TextField fx:id="clipLabelField" prefWidth="126.0" promptText="Clip label (optional)">
-					<VBox.margin>
-						<Insets bottom="10.0" left="5.0" right="5.0" />
-					</VBox.margin>
-				</TextField>
-				<Button fx:id="keepersButton" onAction="#saveKeeper" prefHeight="40.0" prefWidth="126.0" style="-fx-background-color: #6ed11bff;" text="Keepers" textAlignment="CENTER">
-					<font>
-						<Font name="Montserrat Bold" size="18.0" />
-					</font>
-					<VBox.margin>
-						<Insets bottom="5.0" left="5.0" right="5.0" />
-					</VBox.margin>
-				</Button>
-				<Button fx:id="clipsButton" onAction="#saveClip" prefHeight="40.0" prefWidth="126.0" style="-fx-background-color: #6f9bff;" text="Clips" textAlignment="CENTER">
-					<font>
-						<Font name="Montserrat Bold" size="18.0" />
-					</font>
-					<VBox.margin>
-						<Insets left="5.0" right="5.0" />
-					</VBox.margin>
-				</Button>
+					<Button fx:id="keepersButton" onAction="#saveKeeper" prefHeight="40.0" prefWidth="126.0" style="-fx-background-color: #6ed11bff;" text="Keepers" textAlignment="CENTER">
+						<font>
+							<Font name="Montserrat Bold" size="18.0" />
+						</font>
+						<VBox.margin>
+							<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+						</VBox.margin>
+					</Button>
+					<Button fx:id="clipsButton" onAction="#saveClip" prefHeight="40.0" prefWidth="126.0" style="-fx-background-color: #6f9bff;" text="Clips" textAlignment="CENTER">
+						<font>
+							<Font name="Montserrat Bold" size="18.0" />
+						</font>
+						<VBox.margin>
+							<Insets bottom="10.0" left="5.0" right="5.0" />
+						</VBox.margin>
+					</Button>
+					<Button fx:id="markClipButton" onAction="#markClip" prefHeight="47.0" prefWidth="126.0" style="-fx-background-color: #1b8fd1ff;" text="Mark Clip" textAlignment="CENTER">
+						<font>
+							<Font name="Montserrat Bold" size="18.0" />
+						</font>
+						<VBox.margin>
+							<Insets bottom="5.0" left="5.0" right="5.0" />
+						</VBox.margin>
+					</Button>
+					<TextField fx:id="clipLabelField" prefWidth="126.0" promptText="Clip label (optional)">
+						<VBox.margin>
+							<Insets left="5.0" right="5.0" />
+						</VBox.margin>
+					</TextField>
 			</children>
          <padding>
             <Insets bottom="15.0" top="15.0" />
