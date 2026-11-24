@@ -4,3 +4,11 @@ target
 .project
 .idea
 CapProcConfig.xml
+
+dependency-reduced-pom.xml
+/clips/
+/SavedGames.xml
+/SavedGames.xml.bak
+/SavedGames.xml.tmp
+/SavedGames.xml.unreadable
+/images/
