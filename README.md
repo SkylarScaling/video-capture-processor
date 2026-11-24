@@ -18,6 +18,8 @@ java -jar target/video-capture-processor-1.0-SNAPSHOT-shaded.jar
 
 Run the **shaded** jar. It starts through `VideoCaptureProcessorLauncher`, which avoids the JavaFX "missing runtime components" error you get when launching a fat jar via the `Application` class directly.
 
+In Eclipse, run the shared `video-capture-processor.launch` configuration (Run → Run Configurations → Java Application → video-capture-processor). It starts `VideoCaptureProcessorLauncher` with the project folder as the working directory, so it uses the project's `CapProcConfig.xml`.
+
 Run the tests with `mvn test`. To run one test: `mvn test -Dtest=FileMoveTaskTest`.
 
 ## Configuration
