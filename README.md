@@ -35,6 +35,8 @@ Settings are saved to `CapProcConfig.xml` in the directory you launch the app fr
 
 ## Status
 
+The full checklist of what has and hasn't been ported from the Swing app is in [FEATURE_PARITY.md](FEATURE_PARITY.md). In short:
+
 Working:
 
 - Settings dialog (capture, keepers and clips folders, always on top)

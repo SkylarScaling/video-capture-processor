@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A JavaFX (Java 21, JavaFX 21) desktop app that moves the newest game-capture video (and its matching `.clips` file) into a "keepers" or "clips" folder. It is an unfinished port of the Swing app in the sibling repo `../VideoCaptureProcessor`, which is the **feature reference**: cleanup, hotkeys, the game manager/editor, and the XML-backed game collection are not ported yet (`cleanupFiles` in the main controller is a test stub). Keepers, Clips and Mark Clip are ported.
 
+`FEATURE_PARITY.md` is the checklist of Swing features (with IDs like A1, C2) and the place to record decisions to change a feature before porting it. When you finish or change a feature, tick or update its entry in the same commit.
+
 ## Commands
 
 ```powershell
