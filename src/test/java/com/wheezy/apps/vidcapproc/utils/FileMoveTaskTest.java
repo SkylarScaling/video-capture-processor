@@ -127,4 +127,25 @@ public class FileMoveTaskTest
         Files.readString(new File(keepersDir, name + ".clips").toPath()));
     assertFalse("mark file leaves the clips directory", new File(clipsDir, name + ".clips").exists());
   }
+
+  @Test
+  public void renamesAllFilesAndTheMarkFileKeepingExtensions() throws Exception
+  {
+    File captureDir = temp.newFolder("capture");
+    File destDir = temp.newFolder("dest");
+    File clipsDir = temp.newFolder("clips");
+    Files.writeString(new File(captureDir, "game5.mp4").toPath(), "video");
+    Files.writeString(new File(captureDir, "game5.srt").toPath(), "subs");
+    Files.writeString(new File(clipsDir, "game5.clips").toPath(), "0:30");
+
+    FileMoveTask.Result result = new FileMoveTask("game5", "ace_game5", captureDir, destDir, clipsDir).call();
+
+    assertTrue(result.detail(), result.succeeded());
+    assertEquals("ace_game5", result.detail());
+    assertTrue(new File(destDir, "ace_game5.mp4").exists());
+    assertTrue(new File(destDir, "ace_game5.srt").exists());
+    assertTrue(new File(destDir, "ace_game5.clips").exists());
+    assertFalse(new File(destDir, "game5.mp4").exists());
+    assertFalse(new File(captureDir, "game5.mp4").exists());
+  }
 }

@@ -1,8 +1,10 @@
 package com.wheezy.apps.vidcapproc.ui;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -13,6 +15,7 @@ import com.wheezy.apps.vidcapproc.controller.VideoCaptureProcessorController;
 
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -56,13 +59,20 @@ public class MainWindowFxmlTest
     assertTrue(loader.getController() instanceof VideoCaptureProcessorController);
 
     Parent root = loader.getRoot();
-    for (String id : new String[] { "keepersButton", "clipsButton", "markClipButton" })
+    for (String id : new String[] { "keepersButton", "clipsButton", "markClipButton", "cleanupButton" })
     {
       Button button = (Button) root.lookup("#" + id);
       assertNotNull(id + " present", button);
       assertNotNull(id + " has an action", button.getOnAction());
     }
     assertTrue(root.lookup("#clipLabelField") instanceof TextField);
+    assertTrue(root.lookup("#filenameLabelField") instanceof TextField);
     assertTrue(root.lookup("#statusLabel") instanceof Label);
+    assertNotNull("cleanup explains itself", ((Button) root.lookup("#cleanupButton")).getTooltip());
+
+    // Top to bottom: Keepers, its filename label, Clips, Mark Clip, its clip label
+    List<Node> column = root.lookup("#keepersButton").getParent().getChildrenUnmodifiable();
+    assertEquals(List.of("keepersButton", "filenameLabelField", "clipsButton", "markClipButton", "clipLabelField"),
+        column.stream().map(Node::getId).toList());
   }
 }

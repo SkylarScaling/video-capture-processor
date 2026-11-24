@@ -4,15 +4,20 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperties;
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperty;
 import com.wheezy.utils.file.FileUtility;
+import com.wheezy.utils.file.filter.list.FileExtensionListFilter;
+import com.wheezy.utils.file.filter.list.FileOnlyListFilter;
 import com.wheezy.utils.ui.AlertDialog;
 
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 
 public class VideoCaptureProcessorUtils
 {
@@ -24,9 +29,10 @@ public class VideoCaptureProcessorUtils
    * runs on a background thread, and the result is reported with dialogs on the
    * JavaFX thread.
    *
+   * @param filenameLabel text added to the saved files' names (see {@link CaptureNaming}), or null/blank for none
    * @return the running task, or null if nothing was started
    */
-  public static FileMoveTask saveNewestFile(SaveActionType sat)
+  public static FileMoveTask saveNewestFile(SaveActionType sat, String filenameLabel)
   {
     VideoCaptureProcessorProperties props = VideoCaptureProcessorProperties.getInstance();
 
@@ -62,7 +68,10 @@ public class VideoCaptureProcessorUtils
       return null;
     }
 
-    FileMoveTask task = new FileMoveTask(FileUtility.getFilename(newFile, false), captureDir, new File(destLocation),
+    String captureName = FileUtility.getFilename(newFile, false);
+    // The game label joins in here once games can be selected
+    String newName = CaptureNaming.buildName(null, filenameLabel, captureName);
+    FileMoveTask task = new FileMoveTask(captureName, newName, captureDir, new File(destLocation),
         new File(ClipMarker.CLIPS_DIRECTORY));
 
     task.setOnSucceeded(event ->
@@ -86,6 +95,125 @@ public class VideoCaptureProcessorUtils
 
     // Not a daemon thread: closing the window mid-move should not cut a copy short.
     new Thread(task, "file-move").start();
+    return task;
+  }
+
+  private static final ButtonType DELETE_BUTTON = new ButtonType("Delete", ButtonData.OTHER);
+  private static final ButtonType DELETE_EVERYTHING_BUTTON = new ButtonType("Delete Everything", ButtonData.OTHER);
+  private static final ButtonType SAVE_CLIPS_BUTTON = new ButtonType("Save Clips First", ButtonData.OTHER);
+
+  /**
+   * Deletes every file in the capture directory, after confirming. If clip marks
+   * exist, also offers to save the marked captures to the Clips folder first. All
+   * questions are asked up front, and nothing is deleted unless the user agrees.
+   * Must be called on the JavaFX thread: the cleanup runs on a background thread,
+   * and the result is reported with dialogs on the JavaFX thread.
+   * <p>
+   * The files are deleted permanently, not sent to the recycle bin, because the
+   * point of a cleanup is to free disk space after a session.
+   *
+   * @return the running task, or null if nothing was started
+   */
+  public static FileCleanupTask cleanupCaptureDirectory()
+  {
+    VideoCaptureProcessorProperties props = VideoCaptureProcessorProperties.getInstance();
+
+    String captureLocation = props.getProperty(VideoCaptureProcessorProperty.CAPTURE_LOCATION_PROPERTY);
+    if (isBlank(captureLocation))
+    {
+      AlertDialog.displayErrorDialog("Cleanup Error", "Capture Location Not Configured",
+          "Set the capture directory in Settings first.");
+      return null;
+    }
+
+    File captureDir = new File(captureLocation);
+    if (!captureDir.isDirectory())
+    {
+      AlertDialog.displayErrorDialog("Cleanup Error", "Capture Directory Not Found",
+          "There is no directory at: " + captureDir.getAbsolutePath());
+      return null;
+    }
+    if (captureDir.getAbsoluteFile().getParentFile() == null)
+    {
+      // A mistyped setting must not be able to empty a whole drive
+      AlertDialog.displayErrorDialog("Cleanup Error", "Capture Directory Is a Drive Root",
+          "Cleanup will not delete the files at the top of a drive: " + captureDir.getAbsolutePath());
+      return null;
+    }
+
+    File marksDir = new File(ClipMarker.CLIPS_DIRECTORY);
+    File[] captureFiles = captureDir.listFiles(new FileOnlyListFilter());
+    File[] markFiles = marksDir.listFiles(new FileExtensionListFilter(ClipMarker.CLIPS_FILE_EXTENSION));
+    int fileCount = captureFiles == null ? 0 : captureFiles.length;
+    int markCount = markFiles == null ? 0 : markFiles.length;
+
+    if (fileCount == 0 && markCount == 0)
+    {
+      AlertDialog.displayInfoDialog("Nothing to Clean Up", "The capture directory has no files.",
+          captureDir.getAbsolutePath());
+      return null;
+    }
+
+    Optional<ButtonType> confirmed = AlertDialog.displayChoiceDialog(AlertType.WARNING, "Confirm Cleanup",
+        "Delete " + fileCount + (fileCount == 1 ? " file" : " files") + " from the capture directory?",
+        captureDir.getAbsolutePath() + "\n\nThey are deleted permanently.", DELETE_BUTTON, ButtonType.CANCEL);
+    if (confirmed.isEmpty() || confirmed.get() != DELETE_BUTTON)
+    {
+      return null;
+    }
+
+    File saveDir = null;
+    if (markCount > 0)
+    {
+      Optional<ButtonType> choice = AlertDialog.displayChoiceDialog(AlertType.WARNING, "Clips Exist",
+          "Clips are marked on " + markCount + (markCount == 1 ? " capture" : " captures") + " that will be deleted.",
+          "\"Save Clips First\" moves those captures, with their marks, to the Clips folder before everything else "
+              + "is deleted.\n\"Delete Everything\" discards them.",
+          SAVE_CLIPS_BUTTON, DELETE_EVERYTHING_BUTTON, ButtonType.CANCEL);
+      if (choice.isEmpty() || choice.get() == ButtonType.CANCEL)
+      {
+        return null;
+      }
+      if (choice.get() == SAVE_CLIPS_BUTTON)
+      {
+        String clipsLocation = props.getProperty(VideoCaptureProcessorProperty.CLIPS_LOCATION_PROPERTY);
+        if (isBlank(clipsLocation))
+        {
+          AlertDialog.displayErrorDialog("Cleanup Error", "Clips Folder Not Configured",
+              "Set the clips directory in Settings first. Nothing was deleted.");
+          return null;
+        }
+        saveDir = new File(clipsLocation);
+      }
+    }
+
+    FileCleanupTask task = new FileCleanupTask(captureDir, marksDir, saveDir, null); // game label: not ported yet
+
+    task.setOnSucceeded(event ->
+    {
+      FileCleanupTask.Result result = task.getValue();
+      if (!result.succeeded())
+      {
+        AlertDialog.displayAlertDialog(AlertType.WARNING, "Cleanup Stopped",
+            "Cleanup stopped before deleting anything, because saving a clip failed.",
+            result.detail() + "\n" + result.savedCaptures() + " capture(s) were saved to the Clips folder first.");
+      }
+      else if (result.undeletedFiles() > 0)
+      {
+        AlertDialog.displayAlertDialog(AlertType.WARNING, "Files Not Deleted",
+            result.undeletedFiles() + " files could not be deleted from the capture directory.",
+            "They may still be open in your recording software.");
+      }
+    });
+    task.setOnFailed(event ->
+    {
+      Throwable error = task.getException();
+      logger.log(Level.SEVERE, "Error During Cleanup", error);
+      AlertDialog.displayErrorDialog("Cleanup Error", "An error was encountered during the cleanup.",
+          String.valueOf(error.getMessage()));
+    });
+
+    new Thread(task, "file-cleanup").start();
     return task;
   }
 

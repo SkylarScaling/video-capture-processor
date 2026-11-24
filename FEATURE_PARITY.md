@@ -26,21 +26,29 @@ Tracks what the original Swing app ([`VideoCaptureProcessor`](https://github.com
 - [x] **A4. Hotkeys F1 / F2 / F3** for Keepers, Clips and Mark Clip, working anywhere in the window.
   - Swing: key bindings on each button, tooltips show the key (for example "Move latest video to keepers folder (F1)").
   - Port notes: done, with the same tooltips. The keys are fixed, by decision; the Swing TODO list's "allow hotkeys to be re-mapped" is not planned. A hotkey presses its button, so it does exactly what a click does, and it does nothing while that button is disabled, such as during a file move. They work while the label box has focus.
-- [ ] **A5. Game-prefixed filenames on save.** With a game selected, files are renamed to `<game filename label>_<label text>_<original name>`.
+- [x] **A5. Filename label on save.** Saved files are renamed to `<label text>_<original name>` (Swing: `<game filename label>_<label text>_<original name>`).
   - Swing: `FileMoveThread` builds the name from the selected game's filename label and the label box (sanitized with `FileUtility.sanitizeStringForFilename`). With no game selected, the name is unchanged.
-  - Port notes: **Decide:** in Swing the one label box is used both for the clip-mark label *and* the filename. The port currently uses it only for marks, and clears it after each mark. Should the filename label be a separate field? Depends on the game selector (section C).
+  - Port notes: **Decided: a separate field.** Swing used one label box for both the clip-mark label and the filename text; the port has a "Filename label" field under the Keepers button, separate from the Mark Clip label. It applies to both Keepers and Clips. Text is added before the original name (`ace_2024-05-17 20-14-06.mp4`), unsafe characters become underscores, and the field is cleared after a successful move. Unlike Swing, it also works with no game selected. The game-label part of the name is item A10.
 - [x] **A6. Background file moves with error reporting.** Move failures show a dialog and are logged.
   - Swing: `FileMoveThread` and `keepFile()`.
   - Port notes: done (`FileMoveTask`), with tests. Dialogs are shown from the JavaFX thread instead of the worker.
-- [ ] **A7. Cleanup button** deletes everything in the capture folder, after confirmation.
+- [x] **A7. Cleanup button** deletes everything in the capture folder, after confirmation.
   - Swing: `FileDeleteThread`. Asks "Are you sure you want to delete all files from the capture directory?" first. If any `.clips` mark files exist, asks again with *Yes / Cancel / Save Clips*. *Save Clips* first moves the captures that have marks to the Clips folder (with the game prefix), then deletes the rest. Afterwards it deletes the `.clips` files and warns if some files could not be deleted.
-  - Port notes: the button currently opens a test panel (`ButtonPanel.fxml`, marked "TODO REMOVE"). **Decide:** keep the *Save Clips* option? Deleting is destructive, so consider moving to the recycle bin instead of permanent delete, and showing a count before confirming.
+  - Port notes: done (`FileCleanupTask`, with tests). Behaves like Swing, with these decisions:
+    - **Permanent delete, not the recycle bin.** The point of a cleanup is to free disk space after a session, and large videos often skip the recycle bin anyway.
+    - **Confirmation shows a count and the folder** ("Delete 12 files from the capture directory?"), and the Delete button is not the default.
+    - **Save Clips First** is kept. All questions are asked before anything is deleted. If saving a clip fails, nothing is deleted. A mark whose capture is already gone is skipped.
+    - **Safety checks (new):** it refuses to clean a drive root, a missing folder or an unset folder, and says so when the folder is already empty. Subdirectories are never touched, and only `.clips` files are removed from the marks folder.
+    - While it runs, Keepers, Clips, Mark Clip and Cleanup are disabled. Moves disable Cleanup so the two cannot overlap.
+    - The old test panel (`ButtonPanel.fxml`) was removed.
 - [ ] **A8. Status text and progress bar** for long actions ("Moving File...", "Move Complete", "Move Failed", "Cleaning Up Files...").
   - Swing: status bar with a label and an indeterminate progress bar.
   - Port notes: the status line shows the move messages, but there is no progress bar. `FileMoveTask` already reports progress, so a determinate bar is straightforward.
 
 - [x] **A9. Button press feedback.** Buttons flash for 250 ms when used (`ButtonSwingWorker`), for example when a hotkey triggers them.
   - Port notes: done (`ButtonFlash`). The button darkens briefly on any use, click or hotkey, and a second press mid-flash restores the original look correctly.
+- [ ] **A10. Game label in saved filenames.** With a game selected, the name becomes `<game filename label>_<label text>_<original name>`.
+  - Port notes: `CaptureNaming.buildName` and `FileCleanupTask` already take a game label, so this is waiting only on the game selector (section C). Swing applied the game label only when a game was selected, and Save Clips in Cleanup used the game label alone (without the label text).
 
 ## B. Settings and window
 
