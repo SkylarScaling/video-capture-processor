@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A JavaFX (Java 22, JavaFX 24) desktop app that moves the newest game-capture video (and its matching `.clips` file) into a "keepers" or "clips" folder. It is an unfinished port of the Swing app in the sibling repo `../VideoCaptureProcessor`, which is the **feature reference**: choosing the current game in the game selector (and so the game label in file names) is not ported yet. Keepers, Clips, Mark Clip, Cleanup, hotkeys, the filename label and the game manager/editor are ported.
+A JavaFX (Java 25, JavaFX 27) desktop app that moves the newest game-capture video (and its matching `.clips` file) into a "keepers" or "clips" folder. It is an unfinished port of the Swing app in the sibling repo `../VideoCaptureProcessor`, which is the **feature reference**: choosing the current game in the game selector (and so the game label in file names) is not ported yet. Keepers, Clips, Mark Clip, Cleanup, hotkeys, the filename label and the game manager/editor are ported.
 
 `FEATURE_PARITY.md` is the checklist of Swing features (with IDs like A1, C2) and the place to record decisions to change a feature before porting it. When you finish or change a feature, tick or update its entry in the same commit.
 
