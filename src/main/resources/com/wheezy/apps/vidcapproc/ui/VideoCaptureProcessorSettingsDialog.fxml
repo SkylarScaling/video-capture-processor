@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXCheckBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
@@ -51,14 +51,14 @@
 						<Insets left="15.0" right="15.0" />
 					</GridPane.margin>
 				</TextField>
-				<JFXButton fx:id="captureDirButton" buttonType="RAISED"
+				<Button fx:id="captureDirButton"
 					style="-fx-background-color: #fefefeff;" text="Browse..."
 					GridPane.columnIndex="2" GridPane.halignment="RIGHT"
 					onAction="#browseForCaptureDirectory">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>
-				</JFXButton>
+				</Button>
 
 				<Label text="Keepers Folder:" GridPane.rowIndex="1">
 					<font>
@@ -71,20 +71,20 @@
 						<Insets left="15.0" right="15.0" />
 					</GridPane.margin>
 				</TextField>
-				<JFXButton fx:id="keepersDirButton" buttonType="RAISED"
+				<Button fx:id="keepersDirButton"
 					style="-fx-background-color: #fefefeff;" text="Browse..."
 					GridPane.columnIndex="2" GridPane.halignment="RIGHT"
 					GridPane.rowIndex="1" onAction="#browseForKeepersDirectory">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>
-				</JFXButton>
+				</Button>
 
-				<JFXCheckBox fx:id="alwaysOnTopCheckBox" text="Always On Top" GridPane.rowIndex="3">
+				<CheckBox fx:id="alwaysOnTopCheckBox" text="Always On Top" GridPane.rowIndex="3">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>
-				</JFXCheckBox>
+				</CheckBox>
 			</children>
 		</GridPane>
 		<FlowPane alignment="BOTTOM_CENTER" columnHalignment="RIGHT"
@@ -93,20 +93,20 @@
 			AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0"
 			AnchorPane.rightAnchor="15.0">
 			<children>
-				<JFXButton buttonType="RAISED"
+				<Button
 					style="-fx-background-color: #fefefeff;" text="Save"
 					onAction="#saveSettings">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>
-				</JFXButton>
-				<JFXButton buttonType="RAISED"
+				</Button>
+				<Button
 					style="-fx-background-color: #fefefeff;" text="Cancel"
 					onAction="#close">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>
-				</JFXButton>
+				</Button>
 			</children>
 			<opaqueInsets>
 				<Insets />

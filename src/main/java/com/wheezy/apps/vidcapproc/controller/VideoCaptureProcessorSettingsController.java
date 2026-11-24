@@ -7,8 +7,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperties;
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperty;
 import com.wheezy.components.FXMLController;
@@ -30,11 +30,11 @@ public class VideoCaptureProcessorSettingsController extends FXMLController
   @FXML
   private TextField keepersTextField;
   @FXML
-  private JFXButton captureDirButton;
+  private Button captureDirButton;
   @FXML
-  private JFXButton keepersDirButton;
+  private Button keepersDirButton;
   @FXML
-  private JFXCheckBox alwaysOnTopCheckBox;
+  private CheckBox alwaysOnTopCheckBox;
 
   @Override
   public void initialize(URL location, ResourceBundle resources)

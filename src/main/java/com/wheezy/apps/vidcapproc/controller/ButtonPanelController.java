@@ -4,7 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-import com.jfoenix.controls.JFXButton;
+import javafx.scene.control.Button;
 import com.wheezy.apps.vidcapproc.utils.VideoCaptureProcessorUtils;
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperties;
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperty;
@@ -20,25 +20,25 @@ public class ButtonPanelController extends FXMLController
   private VideoCaptureProcessorProperties propertiesInstance;
   
   @FXML  
-  private JFXButton keepersButton;
+  private Button keepersButton;
   
   @FXML  
-  private JFXButton clipsButton;
+  private Button clipsButton;
   
   @FXML  
-  private JFXButton cleanupButton;
+  private Button cleanupButton;
   
   @FXML  
-  private JFXButton markClipButton;
+  private Button markClipButton;
   
   @FXML  
-  private JFXButton noGameButton;
+  private Button noGameButton;
   
   @FXML  
-  private JFXButton game1Button;
+  private Button game1Button;
   
   @FXML  
-  private JFXButton game2Button;
+  private Button game2Button;
   
   @FXML  
   private TextField clipTextField;

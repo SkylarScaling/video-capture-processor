@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Button?>
 <?import com.wheezy.apps.vidcapproc.ui.elements.GameSelectorButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -16,14 +16,14 @@
 	<children>
 		<VBox alignment="CENTER" layoutX="125.0" AnchorPane.leftAnchor="125.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="0.0">
 			<children>
-				<JFXButton fx:id="markClipButton" buttonType="RAISED" prefHeight="47.0" prefWidth="126.0" style="-fx-background-color: #1b8fd1ff;" text="Mark Clip" textAlignment="CENTER">
+				<Button fx:id="markClipButton" prefHeight="47.0" prefWidth="126.0" style="-fx-background-color: #1b8fd1ff;" text="Mark Clip" textAlignment="CENTER">
 					<font>
 						<Font name="Montserrat Bold" size="18.0" />
 					</font>
 					<VBox.margin>
 						<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
 					</VBox.margin>
-				</JFXButton>
+				</Button>
 				<Label text="Tag: Tag Text">
 					<font>
 						<Font name="Montserrat Regular" size="15.0" />
@@ -35,11 +35,11 @@
 						<Insets bottom="5.0" />
 					</padding>
 				</Label>
-				<JFXButton fx:id="saveButton" onAction="#saveVideo" buttonType="RAISED" prefHeight="47.0" prefWidth="126.0" style="-fx-background-color: #6ed11bff;" text="Save..." textAlignment="CENTER">
+				<Button fx:id="saveButton" onAction="#saveVideo" prefHeight="47.0" prefWidth="126.0" style="-fx-background-color: #6ed11bff;" text="Save..." textAlignment="CENTER">
 					<font>
 						<Font name="Montserrat Bold" size="18.0" />
 					</font>
-				</JFXButton>
+				</Button>
 			</children>
          <padding>
             <Insets bottom="15.0" top="15.0" />
@@ -66,7 +66,7 @@
 						<DropShadow color="#00000081" />
 					</effect>
 				</ImageView>
-				<JFXButton fx:id="settingsButton" onAction="#openSettingsDialog" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="7.0" text="" />
+				<Button fx:id="settingsButton" onAction="#openSettingsDialog" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="7.0" text="" />
 			</children>
          <padding>
             <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
@@ -93,7 +93,7 @@
 						<DropShadow color="#00000081" />
 					</effect>
 				</ImageView>
-				<JFXButton fx:id="cleanupButton" onAction="#cleanupFiles" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="28.0" prefWidth="28.0" text=" " textAlignment="CENTER" />
+				<Button fx:id="cleanupButton" onAction="#cleanupFiles" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="28.0" prefWidth="28.0" text=" " textAlignment="CENTER" />
 			</children>
 		</StackPane>
 	</children>

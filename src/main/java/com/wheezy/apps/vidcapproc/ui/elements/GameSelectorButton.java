@@ -1,6 +1,6 @@
 package com.wheezy.apps.vidcapproc.ui.elements;
 
-import com.jfoenix.controls.JFXButton;
+import javafx.scene.control.Button;
 import com.wheezy.apps.vidcapproc.data.Game;
 import com.wheezy.apps.vidcapproc.ui.VideoCaptureProcessorResources;
 
@@ -12,7 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
-public class GameSelectorButton extends JFXButton
+public class GameSelectorButton extends Button
 {
   private static final String SELECTED_BUTTON_STYLE = "-fx-border-width: 4; -fx-border-color: #FF0000FF;";
   private static final String UNSELECTED_BUTTON_STYLE = "-fx-border-width: 0;";
