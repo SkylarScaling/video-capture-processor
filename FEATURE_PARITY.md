@@ -41,9 +41,9 @@ Tracks what the original Swing app ([`VideoCaptureProcessor`](https://github.com
     - **Safety checks (new):** it refuses to clean a drive root, a missing folder or an unset folder, and says so when the folder is already empty. Subdirectories are never touched, and only `.clips` files are removed from the marks folder.
     - While it runs, Keepers, Clips, Mark Clip and Cleanup are disabled. Moves disable Cleanup so the two cannot overlap.
     - The old test panel (`ButtonPanel.fxml`) was removed.
-- [ ] **A8. Status text and progress bar** for long actions ("Moving File...", "Move Complete", "Move Failed", "Cleaning Up Files...").
+- [x] **A8. Status text and progress bar** for long actions ("Moving File...", "Move Complete", "Move Failed", "Cleaning Up Files...").
   - Swing: status bar with a label and an indeterminate progress bar.
-  - Port notes: the status line shows the move messages, but there is no progress bar. `FileMoveTask` already reports progress, so a determinate bar is straightforward.
+  - Port notes: done. A thin progress bar along the bottom of the window shows while a move or cleanup runs. It is determinate for a move (one step per file, counting the `.clips` mark file) and indeterminate until the first file finishes and during a cleanup, because a single large file gives no finer progress. The status line shows "Moving ...", "Move complete" / "Move failed", and "Cleaning up files...", "Cleanup complete" / "Cleanup failed".
 
 - [x] **A9. Button press feedback.** Buttons flash for 250 ms when used (`ButtonSwingWorker`), for example when a hotkey triggers them.
   - Port notes: done (`ButtonFlash`). The button darkens briefly on any use, click or hotkey, and a second press mid-flash restores the original look correctly.
@@ -64,8 +64,8 @@ Tracks what the original Swing app ([`VideoCaptureProcessor`](https://github.com
   - Port notes: done (`WindowSettings`). A saved position that is no longer on any screen, for example after unplugging a monitor, is ignored so the window cannot open out of sight. Values are JavaFX coordinates, so positions saved by the Swing app are not carried over.
 - [x] **B5. Remember the last folder browsed** in file choosers (`FileChooserLoc`).
   - Port notes: done. The chooser opens at the folder already in the field, otherwise where the last choice was made. After each choice the parent folder is saved, because the capture, keepers and clips folders are usually siblings.
-- [ ] **B6. Close confirmation while a move is running**, with "Close Anyway" / "Cancel".
-  - Port notes: **Decide:** the port's move thread is not a daemon thread, so a move finishes even if the window closes. A warning may still be wanted.
+- [x] **B6. Close confirmation while a move is running**, with "Close Anyway" / "Cancel".
+  - Port notes: done, with a changed meaning. Closing the window does not stop a move or cleanup (its thread is not a daemon, so it finishes in the background), but the result dialogs would never appear, so closing while one runs asks "Close Anyway" / "Cancel" and says the work will finish in the background.
 - [ ] **B7. Log file** (`logs/CapProc.log`).
   - Swing: `java.util.logging` `FileHandler`.
   - Port notes: the port logs to the console only.

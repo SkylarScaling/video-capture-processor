@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
 import com.wheezy.apps.vidcapproc.data.Game;
@@ -32,14 +33,19 @@ import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class VideoCaptureProcessorController extends FXMLController
 {
@@ -73,6 +79,25 @@ public class VideoCaptureProcessorController extends FXMLController
 
   @FXML
   private Label statusLabel;
+
+  @FXML
+  private ProgressBar progressBar;
+
+  /** Moves and cleanups in progress. Closing the window while this is above zero asks first. */
+  private int runningTasks;
+
+  /** Asks whether to close anyway while work is running. Replaceable so tests need no dialog. */
+  private BooleanSupplier closeAnywayConfirmation = this::askToCloseAnyway;
+
+  @Override
+  public void setStage(Stage stage)
+  {
+    super.setStage(stage);
+    if (stage != null)
+    {
+      stage.setOnCloseRequest(this::closeRequested);
+    }
+  }
 
   @Override
   public void initialize(URL location, ResourceBundle resources)
@@ -239,10 +264,16 @@ public class VideoCaptureProcessorController extends FXMLController
    * @param succeeded decides, from the task's result, whether it counts as a success
    * @param onSuccess runs after a successful task, or null
    */
-  private <R> void trackTask(Task<R> task, List<? extends Node> disabledWhileRunning, Predicate<R> succeeded,
+  <R> void trackTask(Task<R> task, List<? extends Node> disabledWhileRunning, Predicate<R> succeeded,
       String doneText, String failedText, Runnable onSuccess)
   {
     disabledWhileRunning.forEach(node -> node.setDisable(true));
+    runningTasks++;
+
+    // A task that reports no progress (a cleanup, or a move before its first file is done) shows as indeterminate
+    progressBar.progressProperty().bind(task.progressProperty());
+    progressBar.setVisible(true);
+
     task.messageProperty().addListener((observable, oldMessage, newMessage) -> statusLabel.setText(newMessage));
     task.stateProperty().addListener((observable, oldState, newState) ->
     {
@@ -251,12 +282,45 @@ public class VideoCaptureProcessorController extends FXMLController
         boolean ok = newState == Worker.State.SUCCEEDED && succeeded.test(task.getValue());
         statusLabel.setText(ok ? doneText : failedText);
         disabledWhileRunning.forEach(node -> node.setDisable(false));
+        if (--runningTasks == 0)
+        {
+          progressBar.progressProperty().unbind();
+          progressBar.setVisible(false);
+        }
         if (ok && onSuccess != null)
         {
           onSuccess.run();
         }
       }
     });
+  }
+
+  /**
+   * Closing the window does not stop a running move or cleanup (their thread is not a daemon),
+   * but the result dialogs would never be shown, so the user is asked first.
+   */
+  private void closeRequested(WindowEvent event)
+  {
+    if (runningTasks > 0 && !closeAnywayConfirmation.getAsBoolean())
+    {
+      event.consume();
+    }
+  }
+
+  private boolean askToCloseAnyway()
+  {
+    ButtonType closeAnyway = new ButtonType("Close Anyway", ButtonBar.ButtonData.OK_DONE);
+    ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+    return AlertDialog.displayChoiceDialog(getStage(), AlertType.CONFIRMATION, "Work in Progress",
+        "Files are still being moved or deleted.",
+        "If you close now the work will finish in the background, but you will not be told whether it succeeded.",
+        closeAnyway, cancel).filter(button -> button == closeAnyway).isPresent();
+  }
+
+  /** For tests: replaces the "Close Anyway?" dialog. */
+  void setCloseAnywayConfirmation(BooleanSupplier confirmation)
+  {
+    this.closeAnywayConfirmation = confirmation;
   }
 
   @FXML

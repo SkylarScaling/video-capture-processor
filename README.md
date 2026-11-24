@@ -49,10 +49,11 @@ Working:
 - **Game selector**: a collapsible panel on the right side of the window. The narrow strip at the right edge, or the game button at the top left, opens it, and the window widens to show an icon for each displayed game (the first icon, with a "?", means no game). Click a game to select it, with a red border and its name above the grid, then click the strip again to collapse the panel and shrink the window back. The game button always shows the selected game's icon, and the choice and whether the panel is open are remembered. When a game is selected, its filename label goes at the very front of saved file names, so with the label `BF3` a capture becomes `BF3_ace_2024-05-17 20-14-06.mp4`, and Cleanup's **Save Clips First** names the clips it keeps `BF3_<name>`.
 - **Game manager** (the **Manage Games...** button at the bottom of the game selector): lists your games with their icons, filename labels and whether each is displayed. Add, edit, delete (after confirming), reorder with the arrows, and click a game to show or hide it. Games are saved to `SavedGames.xml` as soon as you change them, in the same format as the Swing app. The editor takes a title (unique), an optional filename label (letters, numbers, dashes, underscores and periods) and an icon, which is scaled to fit 64×64 and stored in `images/`. A game whose icon file is missing shows a default icon.
 - **Hotkeys:** **F1** presses Keepers, **F2** presses Clips and **F3** presses Mark Clip, anywhere in the main window (including while typing a label). A button flashes briefly whenever it is used. A hotkey does nothing while its button is disabled, for example during a file move.
+- **Progress and closing:** while a move or cleanup runs, a thin progress bar at the bottom of the window shows how far along it is (it fills file by file, and stays animated until the first file is done and during cleanup), and the status line says what is happening. If you close the window during that, the app asks **Close Anyway** or **Cancel**. Closing anyway lets the work finish in the background, but you will not be told whether it succeeded.
 
 Known issues and gaps:
 
-- Not yet ported from the Swing app: the menu bar and its Ctrl shortcuts, a close warning while a file move is running, a log file, and a progress bar. See FEATURE_PARITY.md.
+- Not yet ported from the Swing app: the menu bar and its Ctrl shortcuts, and a log file. See FEATURE_PARITY.md.
 - A multi-file move that fails partway is not rolled back, and a missing destination folder is not created.
 
 ## Project layout
