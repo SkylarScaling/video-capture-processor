@@ -1,18 +1,34 @@
 package com.wheezy.utils.ui;
 
 import javafx.scene.control.Alert;
+import javafx.stage.Window;
 
 public class AlertDialog extends Alert
 {
+  private static Window defaultOwner;
 
   public AlertDialog(AlertType alertType)
   {
     super(alertType);
   }
-  
+
+  /**
+   * Sets the window that dialogs shown through the static helpers belong to. An
+   * owned dialog always appears above its owner, which matters when the owner is
+   * an always-on-top window: without an owner the dialog can open behind it.
+   */
+  public static void setDefaultOwner(Window owner)
+  {
+    defaultOwner = owner;
+  }
+
   public static void displayAlertDialog(AlertType alertType, String title, String header, String content)
   {
     Alert alert = new Alert(alertType);
+    if (defaultOwner != null)
+    {
+      alert.initOwner(defaultOwner);
+    }
     alert.setTitle(title);
     alert.setHeaderText(header);
     alert.setContentText(content);

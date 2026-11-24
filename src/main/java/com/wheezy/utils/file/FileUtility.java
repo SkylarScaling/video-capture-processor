@@ -439,10 +439,25 @@ public class FileUtility
   
   public static File browseForDirectory(Stage stage, String browserTitle)
   {
+    return browseForDirectory(stage, browserTitle, null);
+  }
+
+  /**
+   * Shows a directory chooser. The chooser opens at initialDirectory if it is an
+   * existing directory, otherwise at the system default.
+   *
+   * @return the chosen directory, or null if the user cancelled
+   */
+  public static File browseForDirectory(Stage stage, String browserTitle, File initialDirectory)
+  {
     DirectoryChooser directoryChooser = new DirectoryChooser();
     directoryChooser.setTitle(browserTitle);
+    if (initialDirectory != null && initialDirectory.isDirectory())
+    {
+      directoryChooser.setInitialDirectory(initialDirectory);
+    }
     File selectedDirectory = directoryChooser.showDialog(stage);
-    
+
     return selectedDirectory;
   }
 

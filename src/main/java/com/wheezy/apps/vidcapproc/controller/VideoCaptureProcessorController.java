@@ -115,7 +115,11 @@ public class VideoCaptureProcessorController extends FXMLController
   {
     VideoCaptureProcessorStage stage = new VideoCaptureProcessorStage(
         VideoCaptureProcessorResources.SETTINGS_DIALOG_FXML, "Settings", true);
+    stage.initOwner(getStage()); // keeps the dialog above this window even when it is always on top
     stage.showAndWait();
+
+    // The always-on-top setting may have changed
+    getStage().setAlwaysOnTop(propertiesInstance.isAlwaysOnTop());
   }
 
   @FXML
@@ -123,6 +127,7 @@ public class VideoCaptureProcessorController extends FXMLController
   {
     VideoCaptureProcessorStage stage = new VideoCaptureProcessorStage(
         VideoCaptureProcessorResources.GAME_SELECTOR_DIALOG_FXML, "Game Selector", true);
+    stage.initOwner(getStage());
     stage.showAndWait();
   }
 
@@ -133,6 +138,7 @@ public class VideoCaptureProcessorController extends FXMLController
     //TODO REMOVE (Testing only)
     VideoCaptureProcessorStage stage = new VideoCaptureProcessorStage(
         VideoCaptureProcessorResources.BUTTON_PANEL_DIALOG_FXML, "Test Panel", true);
+    stage.initOwner(getStage());
     stage.showAndWait();
   }
 }

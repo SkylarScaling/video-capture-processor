@@ -48,13 +48,13 @@ Tracks what the original Swing app ([`VideoCaptureProcessor`](https://github.com
   - Port notes: done. Opened with the gear button instead of a menu.
 - [x] **B2. Properties file** (`CapProcConfig.xml`) saves settings, with an error dialog if it cannot be read.
   - Port notes: done, with the same file format. **Decide:** still read from the working directory. Moving it to a per-user location (such as `%APPDATA%`) would remove the "launch from the same folder" requirement.
-- [ ] **B3. Always On Top is applied** to the window, defaulting to on.
+- [x] **B3. Always On Top is applied** to the window, defaulting to on.
   - Swing: File menu check item, **Ctrl+A**. Defaults to true when unset.
-  - Port notes: the checkbox in Settings saves `AlwaysOnTop`, but **nothing applies it to the window yet**, so the setting currently does nothing.
-- [ ] **B4. Remember the window position.** Saved on close (`FrameLocationX/Y`), restored on launch.
-  - Port notes: the property keys exist but are unused.
-- [ ] **B5. Remember the last folder browsed** in file choosers (`FileChooserLoc`).
-  - Port notes: the key exists but the folder chooser does not use it.
+  - Port notes: done. Applied at startup and again when the Settings dialog closes, and on by default when never set, as in Swing. The Ctrl+A shortcut is not ported (see B8). Settings, the other dialogs and error alerts are now owned by the main window, so they cannot open hidden behind it.
+- [x] **B4. Remember the window position.** Saved on close (`FrameLocationX/Y`), restored on launch.
+  - Port notes: done (`WindowSettings`). A saved position that is no longer on any screen, for example after unplugging a monitor, is ignored so the window cannot open out of sight. Values are JavaFX coordinates, so positions saved by the Swing app are not carried over.
+- [x] **B5. Remember the last folder browsed** in file choosers (`FileChooserLoc`).
+  - Port notes: done. The chooser opens at the folder already in the field, otherwise where the last choice was made. After each choice the parent folder is saved, because the capture, keepers and clips folders are usually siblings.
 - [ ] **B6. Close confirmation while a move is running**, with "Close Anyway" / "Cancel".
   - Port notes: **Decide:** the port's move thread is not a daemon thread, so a move finishes even if the window closes. A warning may still be wanted.
 - [ ] **B7. Log file** (`logs/CapProc.log`).
