@@ -100,7 +100,7 @@
 					</font>
 				</Button>
 
-				<CheckBox fx:id="alwaysOnTopCheckBox" text="Always On Top" GridPane.rowIndex="3">
+				<CheckBox fx:id="alwaysOnTopCheckBox" text="Always On Top" GridPane.columnSpan="2" GridPane.rowIndex="3">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
 					</font>

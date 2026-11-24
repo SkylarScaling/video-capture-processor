@@ -20,6 +20,8 @@ import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 
 public class VideoCaptureProcessorController extends FXMLController
 {
@@ -31,7 +33,16 @@ public class VideoCaptureProcessorController extends FXMLController
   private GameSelectorButton gameButton;
 
   @FXML
-  private Button saveButton;
+  private Button keepersButton;
+
+  @FXML
+  private Button clipsButton;
+
+  @FXML
+  private TextField clipLabelField;
+
+  @FXML
+  private Label statusLabel;
 
   @Override
   public void initialize(URL location, ResourceBundle resources)
@@ -53,22 +64,50 @@ public class VideoCaptureProcessorController extends FXMLController
   }
 
   @FXML
-  void saveVideo(ActionEvent event)
+  void saveKeeper(ActionEvent event)
   {
-    FileMoveTask task = VideoCaptureProcessorUtils.saveNewestFile(SaveActionType.SAVE_CLIP);
-    if (task != null)
+    startSave(SaveActionType.SAVE_KEEPER);
+  }
+
+  @FXML
+  void saveClip(ActionEvent event)
+  {
+    startSave(SaveActionType.SAVE_CLIP);
+  }
+
+  @FXML
+  void markClip(ActionEvent event)
+  {
+    String clipTime = VideoCaptureProcessorUtils.markClip(clipLabelField.getText());
+    if (clipTime != null)
     {
-      // Block repeat clicks until the move finishes
-      saveButton.setDisable(true);
-      task.stateProperty().addListener((observable, oldState, newState) ->
-      {
-        if (newState == Worker.State.SUCCEEDED || newState == Worker.State.FAILED
-            || newState == Worker.State.CANCELLED)
-        {
-          saveButton.setDisable(false);
-        }
-      });
+      statusLabel.setText("Clip marked: " + clipTime);
+      clipLabelField.clear();
     }
+  }
+
+  private void startSave(SaveActionType action)
+  {
+    FileMoveTask task = VideoCaptureProcessorUtils.saveNewestFile(action);
+    if (task == null)
+    {
+      return;
+    }
+
+    // Block repeat clicks until the move finishes
+    keepersButton.setDisable(true);
+    clipsButton.setDisable(true);
+    task.messageProperty().addListener((observable, oldMessage, newMessage) -> statusLabel.setText(newMessage));
+    task.stateProperty().addListener((observable, oldState, newState) ->
+    {
+      if (newState == Worker.State.SUCCEEDED || newState == Worker.State.FAILED || newState == Worker.State.CANCELLED)
+      {
+        boolean moved = newState == Worker.State.SUCCEEDED && task.getValue().succeeded();
+        statusLabel.setText(moved ? "Move complete" : "Move failed");
+        keepersButton.setDisable(false);
+        clipsButton.setDisable(false);
+      }
+    });
   }
 
   @FXML

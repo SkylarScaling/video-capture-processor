@@ -1,6 +1,9 @@
 package com.wheezy.apps.vidcapproc.utils;
 
 import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,9 +62,8 @@ public class VideoCaptureProcessorUtils
       return null;
     }
 
-    String clipsLocation = props.getProperty(VideoCaptureProcessorProperty.CLIPS_LOCATION_PROPERTY);
     FileMoveTask task = new FileMoveTask(FileUtility.getFilename(newFile, false), captureDir, new File(destLocation),
-        isBlank(clipsLocation) ? null : new File(clipsLocation));
+        new File(ClipMarker.CLIPS_DIRECTORY));
 
     task.setOnSucceeded(event ->
     {
@@ -91,79 +93,52 @@ public class VideoCaptureProcessorUtils
   {
     return value == null || value.isBlank();
   }
-//
-//  private void markClip()
-//  {
-//    Date currentTime = new Date();
-//
-//    File clipFile = FileUtility.findNewestFileInDirectory(
-//        propertiesInstance.getProperty(CaptureProcessorProperties.CAPTURE_LOCATION_PROPERTY.getName()));
-//
-//    if (clipFile == null)
-//    {
-//      JOptionPane.showMessageDialog(captureProcessorFrame, "There are no files in the capture directory!",
-//          "Capture Directory is Empty", JOptionPane.WARNING_MESSAGE);
-//      return;
-//    }
-//
-//    String filename = FileUtility.getFilename(clipFile, false);
-//
-//    /*
-//     * Allow custom format Filename format: 2011_8_23_20_14_6.M2TS
-//     * 
-//     * Live Gamer Portable Filename format: (yyyyMMddHHmmss) 20110823201406.mp4
-//     * 
-//     * OBS Studio Filename format: yyyy-MM-dd-HH-mm-ss.mp4
-//     */
-//    /*
-//     * SimpleDateFormat filenameDateFormat = new SimpleDateFormat("yyyy_M_d_H_m_s",
-//     * Locale.ENGLISH);
-//     */
-//    SimpleDateFormat filenameDateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss", Locale.ENGLISH);
-//
-//    Date fileDate;
-//    try
-//    {
-//      fileDate = filenameDateFormat.parse(filename);
-//    }
-//    catch (ParseException e)
-//    {
-//      JOptionPane.showMessageDialog(captureProcessorFrame,
-//          "Unable to parse date from capture file name. This clip cannot be marked.\n" + clipFile.getPath(),
-//          "Clip Parsing Error", JOptionPane.ERROR_MESSAGE);
-//      logger.log(Level.SEVERE, "Clip Date Parsing Error", e);
-//      return;
-//    }
-//
-//    long timeDiff = currentTime.getTime() - fileDate.getTime();
-//    long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiff);
-//    long seconds = TimeUnit.MILLISECONDS.toSeconds(timeDiff)
-//        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeDiff));
-//
-//    NumberFormat numFormat = new DecimalFormat("00");
-//    String clipTime = minutes + ":" + numFormat.format(seconds);
-//    String clipLabel = labelField.getText().isEmpty() ? "" : " (" + labelField.getText() + ") ";
-//    try
-//    {
-//      FileUtility.writeStringToFile(clipTime + clipLabel, new File(CLIPS_DIRECTORY + filename + CLIPS_FILE_EXTENSION),
-//          true);
-//      progressLabel.setText("Clip marked: " + clipTime);
-//    }
-//    catch (IOException e)
-//    {
-//      JOptionPane.showMessageDialog(captureProcessorFrame,
-//          "Unable to parse date from capture file name. This clip cannot be marked.", "Clip Parsing Error",
-//          JOptionPane.ERROR_MESSAGE);
-//      logger.log(Level.SEVERE, "Clip File Creation Error", e);
-//    }
-//
-//    new ButtonSwingWorker(FunctionButtons.MARK_BUTTON);
-//  }
-//
-//  private void resetLabelFieldAndGetFocus()
-//  {
-//    // Reset the text
-//    labelField.setText("");
-//    labelField.requestFocus();
-//  } 
+
+  /**
+   * Marks the current moment in the capture that is being recorded (the newest file
+   * in the capture directory), showing a dialog and returning null if that is not
+   * possible. Must be called on the JavaFX thread.
+   *
+   * @param label optional text saved with the mark
+   * @return the marked time as minutes:seconds, e.g. "1:35", or null if nothing was marked
+   */
+  public static String markClip(String label)
+  {
+    String captureLocation = VideoCaptureProcessorProperties.getInstance()
+        .getProperty(VideoCaptureProcessorProperty.CAPTURE_LOCATION_PROPERTY);
+    if (isBlank(captureLocation))
+    {
+      AlertDialog.displayErrorDialog("Clip Mark Error", "Capture Location Not Configured",
+          "Set the capture directory in Settings first.");
+      return null;
+    }
+
+    File captureDir = new File(captureLocation);
+    File captureFile = captureDir.isDirectory() ? FileUtility.findNewestFileInDirectory(captureLocation) : null;
+    if (captureFile == null)
+    {
+      AlertDialog.displayAlertDialog(AlertType.WARNING, "Capture Directory is Empty", "Clip Mark Error",
+          "There are no files in the capture directory: " + captureDir.getAbsolutePath());
+      return null;
+    }
+
+    String captureName = FileUtility.getFilename(captureFile, false);
+    try
+    {
+      return ClipMarker.mark(captureName, new File(ClipMarker.CLIPS_DIRECTORY), label, LocalDateTime.now());
+    }
+    catch (DateTimeParseException | IllegalArgumentException e)
+    {
+      logger.log(Level.WARNING, "Clip Date Parsing Error", e);
+      AlertDialog.displayErrorDialog("Clip Parsing Error", "This clip cannot be marked.",
+          "Unable to get a start time from the capture file name (expected yyyy-MM-dd HH-mm-ss):\n"
+              + captureFile.getName());
+    }
+    catch (IOException e)
+    {
+      logger.log(Level.SEVERE, "Clip File Creation Error", e);
+      AlertDialog.displayErrorDialog("Clip Mark Error", "Unable to save the clip mark.", e.getMessage());
+    }
+    return null;
+  }
 }

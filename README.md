@@ -1,6 +1,6 @@
 # video-capture-processor
 
-A small JavaFX desktop app for sorting game-capture recordings. Point it at the folder your capture software writes to, and it moves the newest recording (plus its matching `.clips` marker file) into the folder you choose.
+A small JavaFX desktop app for sorting game-capture recordings. Point it at the folder your capture software writes to, and it moves the newest recording (plus any clip marks you made while it was recording) into your keepers or clips folder.
 
 > **Status: work in progress.** This is a JavaFX rewrite of the older Swing app, [VideoCaptureProcessor](https://github.com/SkylarScaling/VideoCaptureProcessor), which remains the feature reference. Only part of that app has been ported so far (see [Status](#status)).
 
@@ -27,8 +27,8 @@ Run the tests with `mvn test`. To run one test: `mvn test -Dtest=FileMoveTaskTes
 Open **Settings** in the app to choose:
 
 - **Capture Folder**: where your capture software saves recordings
-- **Keepers Folder**: where keepers are meant to go (not used yet)
-- **Clips Folder**: where **Save...** moves captures, and where it looks for the matching `.clips` marker file
+- **Keepers Folder**: where **Keepers** moves captures
+- **Clips Folder**: where **Clips** moves captures
 - **Always On Top**
 
 Settings are saved to `CapProcConfig.xml` in the directory you launch the app from (it is gitignored). Start the app from the same directory each time, or it will create a fresh config.
@@ -38,11 +38,12 @@ Settings are saved to `CapProcConfig.xml` in the directory you launch the app fr
 Working:
 
 - Settings dialog (capture, keepers and clips folders, always on top)
-- **Save...** finds the newest file in the capture folder and moves it to the clips folder, along with other files that share its name and the matching `.clips` file, on a background thread. If the capture or clips folder isn't set, it tells you to configure them in Settings. The button is disabled while the move runs, and problems are reported in a dialog and logged to the console.
+- **Keepers** and **Clips** find the newest file in the capture folder and move it to the keepers or clips folder, along with other files that share its name and its `.clips` mark file, on a background thread. If a folder isn't set, the app tells you to configure it in Settings. Both buttons are disabled while a move runs, and problems are reported in a dialog and logged to the console.
+- **Mark Clip** records how far into the current recording you are, so you can find the moment later. It reads the recording's start time from its filename, so capture files must be named `yyyy-MM-dd HH-mm-ss` (for example `2024-05-17 20-14-06.mp4`, the OBS filename format). Type an optional label first, and it is saved with the mark, as in `12:34 (nice shot)`. Marks are appended to `clips/<capture name>.clips` in the working directory, one per line, and move with the capture when you press Keepers or Clips.
 
 Known issues and gaps:
 
-- Not yet ported from the Swing app: keepers/clips buttons, marking clips, cleanup, hotkeys, and the game selector and manager (adding, editing, reordering and persisting games).
+- Not yet ported from the Swing app: cleanup, hotkeys, and the game selector and manager (adding, editing, reordering and persisting games).
 - A multi-file move that fails partway is not rolled back, and a missing destination folder is not created.
 
 ## Project layout

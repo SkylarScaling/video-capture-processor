@@ -19,7 +19,7 @@ import javafx.concurrent.Task;
 public class FileMoveTask extends Task<FileMoveTask.Result>
 {
   private static final Logger logger = Logger.getLogger(FileMoveTask.class.getName());
-  private static final String CLIPS_FILE_EXTENSION = ".clips";
+  private static final String CLIPS_FILE_EXTENSION = ClipMarker.CLIPS_FILE_EXTENSION;
 
   public record Result(FileUtilityReturnCode code, String detail)
   {
@@ -38,7 +38,7 @@ public class FileMoveTask extends Task<FileMoveTask.Result>
    * @param filename   capture filename without extension
    * @param captureDir directory the capture files are currently in
    * @param destDir    directory to move the capture files to
-   * @param clipsDir   directory holding the clips file, or null if there is none
+   * @param clipsDir   directory holding the .clips mark file, or null if there is none
    */
   public FileMoveTask(String filename, File captureDir, File destDir, File clipsDir)
   {

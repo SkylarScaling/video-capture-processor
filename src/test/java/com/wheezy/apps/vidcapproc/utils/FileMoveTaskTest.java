@@ -109,4 +109,22 @@ public class FileMoveTaskTest
     assertTrue(new File(clipsDir, "game4.mp4").exists());
     assertEquals("1:23", Files.readString(new File(clipsDir, "game4.clips").toPath()));
   }
+
+  @Test
+  public void markedClipsTravelWithTheCapture() throws Exception
+  {
+    File captureDir = temp.newFolder("capture");
+    File keepersDir = temp.newFolder("keepers");
+    File clipsDir = new File(temp.getRoot(), "clips"); // created by the first mark
+    String name = "2024-05-17 20-14-06";
+    Files.writeString(new File(captureDir, name + ".mp4").toPath(), "video");
+
+    ClipMarker.mark(name, clipsDir, "ace", java.time.LocalDateTime.of(2024, 5, 17, 20, 16, 1));
+    FileMoveTask.Result result = new FileMoveTask(name, captureDir, keepersDir, clipsDir).call();
+
+    assertTrue(result.detail(), result.succeeded());
+    assertEquals("1:55 (ace)" + System.lineSeparator(),
+        Files.readString(new File(keepersDir, name + ".clips").toPath()));
+    assertFalse("mark file leaves the clips directory", new File(clipsDir, name + ".clips").exists());
+  }
 }
