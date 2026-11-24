@@ -4,6 +4,8 @@
 <?import com.wheezy.apps.vidcapproc.ui.elements.GameSelectorButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
@@ -62,22 +64,17 @@
             <Insets bottom="15.0" top="15.0" />
          </padding>
 		</Label>
-		<StackPane prefHeight="37.0" prefWidth="7.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-			<children>
-				<ImageView fitHeight="37.0" fitWidth="7.0" pickOnBounds="true" preserveRatio="true">
-					<image>
-						<Image url="@../icons/more-vertical.png" />
-					</image>
-					<effect>
-						<DropShadow color="#00000081" />
-					</effect>
-				</ImageView>
-				<Button fx:id="settingsButton" onAction="#openSettingsDialog" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="7.0" text="" />
-			</children>
-         <padding>
-            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-         </padding>
-		</StackPane>
+		<Button fx:id="settingsButton" onAction="#openSettingsDialog" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="30.0" AnchorPane.leftAnchor="3.0" AnchorPane.topAnchor="15.0">
+			<padding>
+				<Insets />
+			</padding>
+			<graphic>
+				<SVGPath fill="#444444" content="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+			</graphic>
+			<tooltip>
+				<Tooltip text="Settings" />
+			</tooltip>
+		</Button>
 		<StackPane prefHeight="84.0" prefWidth="84.0" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="0.0">
 			<children>
 				<GameSelectorButton fx:id="gameButton" onAction="#openGameSelectorDialog" contentDisplay="CENTER" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" text=" ">
@@ -89,18 +86,20 @@
             <Insets bottom="15.0" right="15.0" top="15.0" />
          </padding>
 		</StackPane>
-		<StackPane layoutX="6.0" layoutY="147.0" prefHeight="20.0" prefWidth="20.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="9.0">
-			<children>
-				<ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+		<Button fx:id="cleanupButton" onAction="#cleanupFiles" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="30.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="3.0">
+			<padding>
+				<Insets />
+			</padding>
+			<graphic>
+				<ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
 					<image>
 						<Image url="@../icons/trash.png" />
 					</image>
-					<effect>
-						<DropShadow color="#00000081" />
-					</effect>
 				</ImageView>
-				<Button fx:id="cleanupButton" onAction="#cleanupFiles" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="28.0" prefWidth="28.0" text=" " textAlignment="CENTER" />
-			</children>
-		</StackPane>
+			</graphic>
+			<tooltip>
+				<Tooltip text="Cleanup" />
+			</tooltip>
+		</Button>
 	</children>
 </AnchorPane>
