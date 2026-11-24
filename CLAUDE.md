@@ -14,10 +14,10 @@ A JavaFX (Java 21, JavaFX 21) desktop app that moves the newest game-capture vid
 mvn clean package                      # compile, run tests, build jars
 mvn test                               # tests only
 mvn test -Dtest=FileMoveTaskTest#reportsMissingFilesWithoutThrowing   # single test
-java -jar target/video-capture-processor-1.0-SNAPSHOT-shaded.jar      # run the app
+java -p "target/video-capture-processor-1.0-SNAPSHOT.jar;target/modules" -m com.wheezy.apps.vidcapproc/com.wheezy.apps.vidcapproc.VideoCaptureProcessor
 ```
 
-- Always launch the **shaded** jar (main class `VideoCaptureProcessorLauncher`); launching `VideoCaptureProcessor` directly from a fat jar fails with the JavaFX "missing runtime components" error. The "Unsupported JavaFX configuration" warning on startup is expected.
+- The app is a single **open** Java module (`src/main/java/module-info.java`) and must run on the module path; the old shaded jar and `VideoCaptureProcessorLauncher` are gone, since a classpath launch makes JavaFX print "Unsupported JavaFX configuration". `mvn package` copies the runtime jars (Windows JavaFX jars only; plain `javafx-*.jar` stubs would clash) into `target/modules`. A new `requires` is needed in `module-info.java` for any new JDK or library module. Surefire runs the tests on the module path too.
 - No linter or formatter is configured. Tests are JUnit 4.
 - `mvn package` regenerates `dependency-reduced-pom.xml` (gitignored); delete it if it shows up.
 

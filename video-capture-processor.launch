@@ -11,7 +11,7 @@
         <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
     </listAttribute>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_CLASSPATH_ONLY_JAR" value="false"/>
-    <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.wheezy.apps.vidcapproc.VideoCaptureProcessorLauncher"/>
+    <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.wheezy.apps.vidcapproc.VideoCaptureProcessor"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="video-capture-processor"/>
     <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${project_loc:video-capture-processor}"/>
 </launchConfiguration>

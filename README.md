@@ -13,12 +13,12 @@ A small JavaFX desktop app for sorting game-capture recordings. Point it at the 
 
 ```
 mvn clean package
-java -jar target/video-capture-processor-1.0-SNAPSHOT-shaded.jar
+java -p "target/video-capture-processor-1.0-SNAPSHOT.jar;target/modules" -m com.wheezy.apps.vidcapproc/com.wheezy.apps.vidcapproc.VideoCaptureProcessor
 ```
 
-Run the **shaded** jar. It starts through `VideoCaptureProcessorLauncher`, which avoids the JavaFX "missing runtime components" error you get when launching a fat jar via the `Application` class directly.
+The app is a Java module (`module-info.java`) and runs on the **module path**, which is how JavaFX is supported. `mvn package` copies the runtime dependencies into `target/modules`, so run the command above from the project folder. The JavaFX jars copied there are the Windows ones; on another OS, change the `win` classifier in `pom.xml`.
 
-In Eclipse, run the shared `video-capture-processor.launch` configuration (Run → Run Configurations → Java Application → video-capture-processor). It starts `VideoCaptureProcessorLauncher` with the project folder as the working directory, so it uses the project's `CapProcConfig.xml`.
+In Eclipse, run the shared `video-capture-processor.launch` configuration (Run → Run Configurations → Java Application → video-capture-processor). It starts `VideoCaptureProcessor` with the project folder as the working directory, so it uses the project's `CapProcConfig.xml`.
 
 Run the tests with `mvn test`. To run one test: `mvn test -Dtest=FileMoveTaskTest`.
 
