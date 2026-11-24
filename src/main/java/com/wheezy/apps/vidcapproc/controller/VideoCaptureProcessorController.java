@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.wheezy.apps.vidcapproc.ui.ButtonFlash;
 import com.wheezy.apps.vidcapproc.ui.VideoCaptureProcessorResources;
 import com.wheezy.apps.vidcapproc.ui.components.VideoCaptureProcessorStage;
 import com.wheezy.apps.vidcapproc.ui.elements.GameSelectorButton;
@@ -19,9 +20,13 @@ import com.wheezy.utils.ui.AlertDialog;
 import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
 
 public class VideoCaptureProcessorController extends FXMLController
 {
@@ -39,6 +44,9 @@ public class VideoCaptureProcessorController extends FXMLController
   private Button clipsButton;
 
   @FXML
+  private Button markClipButton;
+
+  @FXML
   private TextField clipLabelField;
 
   @FXML
@@ -48,6 +56,20 @@ public class VideoCaptureProcessorController extends FXMLController
   public void initialize(URL location, ResourceBundle resources)
   {
     super.initialize(location, resources);
+
+    keepersButton.setTooltip(new Tooltip("Move latest video to keepers folder (F1)"));
+    clipsButton.setTooltip(new Tooltip("Move latest video to clips folder (F2)"));
+    markClipButton.setTooltip(new Tooltip("Mark the timestamp for a clip (F3)"));
+    clipLabelField.setTooltip(new Tooltip("Add a label to the clip or file"));
+
+    // The scene doesn't exist until the stage wraps the loaded FXML, so wait for it
+    markClipButton.sceneProperty().addListener((observable, oldScene, scene) ->
+    {
+      if (scene != null)
+      {
+        installHotkeys(scene);
+      }
+    });
 
     try
     {
@@ -63,21 +85,36 @@ public class VideoCaptureProcessorController extends FXMLController
     }
   }
 
+  /**
+   * F1, F2 and F3 press the Keepers, Clips and Mark Clip buttons, so a hotkey does
+   * exactly what a click does, and does nothing while a button is disabled (for
+   * example during a file move).
+   */
+  private void installHotkeys(Scene scene)
+  {
+    scene.getAccelerators().put(new KeyCodeCombination(KeyCode.F1), keepersButton::fire);
+    scene.getAccelerators().put(new KeyCodeCombination(KeyCode.F2), clipsButton::fire);
+    scene.getAccelerators().put(new KeyCodeCombination(KeyCode.F3), markClipButton::fire);
+  }
+
   @FXML
   void saveKeeper(ActionEvent event)
   {
+    ButtonFlash.flash(keepersButton);
     startSave(SaveActionType.SAVE_KEEPER);
   }
 
   @FXML
   void saveClip(ActionEvent event)
   {
+    ButtonFlash.flash(clipsButton);
     startSave(SaveActionType.SAVE_CLIP);
   }
 
   @FXML
   void markClip(ActionEvent event)
   {
+    ButtonFlash.flash(markClipButton);
     String clipTime = VideoCaptureProcessorUtils.markClip(clipLabelField.getText());
     if (clipTime != null)
     {

@@ -23,9 +23,9 @@ Tracks what the original Swing app ([`VideoCaptureProcessor`](https://github.com
 - [x] **A3. Mark Clip** records the time elapsed since the current recording started, with an optional label, in `clips/<capture name>.clips`.
   - Swing: `markClip()`, key **F3**.
   - Port notes: done, using `java.time` (`ClipMarker`). Needs capture files named `yyyy-MM-dd HH-mm-ss`, same as Swing. The label box is cleared after a mark.
-- [ ] **A4. Hotkeys F1 / F2 / F3** for Keepers, Clips and Mark Clip, working anywhere in the window.
+- [x] **A4. Hotkeys F1 / F2 / F3** for Keepers, Clips and Mark Clip, working anywhere in the window.
   - Swing: key bindings on each button, tooltips show the key (for example "Move latest video to keepers folder (F1)").
-  - Port notes: **Decide:** keep F1 to F3, or make them configurable? The Swing TODO list also asks for re-mappable keys. Tooltips should show the key either way.
+  - Port notes: done, with the same tooltips. The keys are fixed, by decision; the Swing TODO list's "allow hotkeys to be re-mapped" is not planned. A hotkey presses its button, so it does exactly what a click does, and it does nothing while that button is disabled, such as during a file move. They work while the label box has focus.
 - [ ] **A5. Game-prefixed filenames on save.** With a game selected, files are renamed to `<game filename label>_<label text>_<original name>`.
   - Swing: `FileMoveThread` builds the name from the selected game's filename label and the label box (sanitized with `FileUtility.sanitizeStringForFilename`). With no game selected, the name is unchanged.
   - Port notes: **Decide:** in Swing the one label box is used both for the clip-mark label *and* the filename. The port currently uses it only for marks, and clears it after each mark. Should the filename label be a separate field? Depends on the game selector (section C).
@@ -38,8 +38,9 @@ Tracks what the original Swing app ([`VideoCaptureProcessor`](https://github.com
 - [ ] **A8. Status text and progress bar** for long actions ("Moving File...", "Move Complete", "Move Failed", "Cleaning Up Files...").
   - Swing: status bar with a label and an indeterminate progress bar.
   - Port notes: the status line shows the move messages, but there is no progress bar. `FileMoveTask` already reports progress, so a determinate bar is straightforward.
-- [ ] **A9. Button press feedback.** Buttons flash for 250 ms when used (`ButtonSwingWorker`), for example when a hotkey triggers them.
-  - Port notes: matters most once hotkeys exist (A4), since there is no click to show the press.
+
+- [x] **A9. Button press feedback.** Buttons flash for 250 ms when used (`ButtonSwingWorker`), for example when a hotkey triggers them.
+  - Port notes: done (`ButtonFlash`). The button darkens briefly on any use, click or hotkey, and a second press mid-flash restores the original look correctly.
 
 ## B. Settings and window
 
