@@ -63,6 +63,9 @@
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.6.1</version>
+				<configuration>
+					<argLine>--enable-native-access=javafx.graphics</argLine>
+				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>

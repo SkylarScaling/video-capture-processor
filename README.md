@@ -7,7 +7,7 @@ A small JavaFX desktop app for sorting game-capture recordings. Point it at the 
 ## Requirements
 
 - JDK 25 or newer
-- Maven 3.8+ (JavaFX 27 is pulled in as a Maven dependency; no separate JavaFX install is needed)
+- Maven 3.9+ (JavaFX 27 is pulled in as a Maven dependency; no separate JavaFX install is needed)
 
 ## Build and run
 
