@@ -269,4 +269,60 @@ public class GameSelectorPanelTest
     assertEquals("Manage Games...", ((Button) last).getText());
     assertEquals(List.of("manage"), calls);
   }
+
+  @Test
+  public void gameIconsHaveAnEditItemInTheirRightClickMenu() throws Exception
+  {
+    open();
+
+    List<String> menus = onFxThread(() -> panel.gameButtons().stream()
+        .map(button -> button.getContextMenu() == null ? "none"
+            : button.getContextMenu().getItems().get(0).getText())
+        .toList());
+
+    assertEquals("no game has nothing to edit", List.of("none", "Edit...", "Edit..."), menus);
+  }
+
+  @Test
+  public void editingAnIconHandsThatGameToTheEditHandler() throws Exception
+  {
+    open();
+    List<Game> asked = new ArrayList<>();
+    onFxThread(() ->
+    {
+      panel.setOnEditGame(asked::add);
+      return null;
+    });
+
+    onFxThread(() ->
+    {
+      panel.gameButtons().get(2).getContextMenu().getItems().get(0).fire(); // None, Alpha, Gamma
+      return null;
+    });
+
+    assertEquals(1, asked.size());
+    assertSame(gamma, asked.get(0));
+    assertNull("editing does not select the game", selection.getSelectedGame());
+  }
+
+  @Test
+  public void theEditHandlerSurvivesTheIconsBeingRebuilt() throws Exception
+  {
+    open();
+    List<Game> asked = new ArrayList<>();
+    onFxThread(() ->
+    {
+      panel.setOnEditGame(asked::add);
+      return null;
+    });
+
+    catalog.add(game("Delta", "D", true)); // the icons are rebuilt
+    onFxThread(() ->
+    {
+      panel.gameButtons().get(3).getContextMenu().getItems().get(0).fire();
+      return null;
+    });
+
+    assertEquals("Delta", asked.get(0).getGameTitle());
+  }
 }

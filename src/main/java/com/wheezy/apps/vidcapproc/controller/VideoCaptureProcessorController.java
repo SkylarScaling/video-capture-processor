@@ -143,6 +143,7 @@ public class VideoCaptureProcessorController extends FXMLController
     GameSelection selection = GameSelection.getInstance();
     gameSelectorPanel.bind(GameCatalog.getInstance(), selection);
     gameSelectorPanel.setOnManageGames(this::openGameManager);
+    gameSelectorPanel.setOnEditGame(game -> GameEditorController.open(getStage(), GameCatalog.getInstance(), game));
 
     // The game button always shows the selected game, so it is useful even with the selector collapsed
     showSelectedGame(selection.getSelectedGame());

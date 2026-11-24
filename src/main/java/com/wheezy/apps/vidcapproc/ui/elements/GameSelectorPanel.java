@@ -4,6 +4,8 @@ import com.wheezy.apps.vidcapproc.data.Game;
 import com.wheezy.apps.vidcapproc.data.GameCatalog;
 import com.wheezy.apps.vidcapproc.data.GameSelection;
 
+import java.util.function.Consumer;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -49,6 +51,7 @@ public class GameSelectorPanel extends HBox
   private GameSelection selection;
   private GameSelectorButton noneButton;
   private Runnable onManageGames = () -> {};
+  private Consumer<Game> onEditGame = game -> {};
 
   public GameSelectorPanel()
   {
@@ -116,6 +119,12 @@ public class GameSelectorPanel extends HBox
     onManageGames = action == null ? () -> {} : action;
   }
 
+  /** @param action what "Edit..." in a game icon's right-click menu does with that game */
+  public void setOnEditGame(Consumer<Game> action)
+  {
+    onEditGame = action == null ? game -> {} : action;
+  }
+
   public BooleanProperty expandedProperty()
   {
     return expanded;
@@ -172,6 +181,7 @@ public class GameSelectorPanel extends HBox
       {
         GameSelectorButton button = new GameSelectorButton(game);
         button.setOnAction(event -> selection.select(game));
+        button.setOnEditRequested(() -> onEditGame.accept(game));
         gamesPane.getChildren().add(button);
       }
     }

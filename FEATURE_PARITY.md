@@ -89,7 +89,8 @@ Tracks what the original Swing app ([`VideoCaptureProcessor`](https://github.com
   - Port notes: done. It follows the game if you rename it in the manager, and clears if you delete it. Hiding the selected game keeps it selected (its name still shows, without an icon).
 - [x] **C4. Show or hide the selector**, remembered between runs (`GameSelectorShow`), with the window resizing to fit.
   - Port notes: done. It starts collapsed the first time. Unlike Swing, the window grows sideways, not taller.
-- [ ] **C5. Right-click menu** on a game button with "Edit...".
+- [x] **C5. Right-click menu** on a game button with "Edit...".
+- Port notes: done. Right-clicking a game icon in the selector offers "Edit...", which opens the same editor as the game manager (`GameEditorController.open`). The icon for no game has no menu. Editing does not select the game.
 
 ## D. Game manager
 

@@ -13,6 +13,8 @@ import com.wheezy.apps.vidcapproc.data.Game;
 import com.wheezy.apps.vidcapproc.data.GameCatalog;
 import com.wheezy.apps.vidcapproc.data.GameValidation;
 import com.wheezy.apps.vidcapproc.ui.GameIcons;
+import com.wheezy.apps.vidcapproc.ui.VideoCaptureProcessorResources;
+import com.wheezy.apps.vidcapproc.ui.components.VideoCaptureProcessorStage;
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperties;
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperty;
 import com.wheezy.components.FXMLController;
@@ -61,6 +63,21 @@ public class GameEditorController extends FXMLController
     filenameLabelField.textProperty().addListener((observable, oldText, newText) -> revalidate());
     iconImageView.setImage(GameIcons.defaultIcon());
     revalidate();
+  }
+
+  /** Opens the editor on its own window. @param game the game to edit, or null to add a new one */
+  public static void open(Window owner, GameCatalog catalog, Game game)
+  {
+    VideoCaptureProcessorStage stage = new VideoCaptureProcessorStage(
+        VideoCaptureProcessorResources.GAME_EDITOR_FXML, game == null ? "Add Game" : "Edit Game", true);
+    if (owner != null)
+    {
+      stage.initOwner(owner);
+    }
+    GameEditorController editor = (GameEditorController) stage.getController();
+    editor.useCatalog(catalog);
+    editor.setGame(game);
+    stage.showAndWait();
   }
 
   /** Uses the given catalog, which tests use to avoid touching the real games file. */

@@ -19,7 +19,7 @@ public class GameSelectorButton extends Button
   private static final double GAME_BUTTON_HEIGHT = 84.0;
 
   private Game game;
-  private ContextMenu rightClickMenu = new ContextMenu();
+  private Runnable onEditRequested;
 
   public GameSelectorButton()
   {
@@ -29,12 +29,6 @@ public class GameSelectorButton extends Button
   public GameSelectorButton(Game game)
   {
     super();
-
-    MenuItem editGameMenuItem = new MenuItem("Edit...");
-    editGameMenuItem.setOnAction((event) -> {
-      // Editing from the selector is not ported yet
-    });
-    rightClickMenu.getItems().add(editGameMenuItem);
 
     this.setPrefSize(GAME_BUTTON_WIDTH, GAME_BUTTON_HEIGHT);
     // Fixed size: the selected border and default padding must not make the button grow and wrap the row
@@ -60,6 +54,23 @@ public class GameSelectorButton extends Button
     this.setTooltip(new Tooltip(title == null || title.isBlank() ? "No game selected" : title));
   }
 
+  /**
+   * Adds a right-click menu with "Edit..." that runs the given action, or removes the menu
+   * for null. The button for "no game" has nothing to edit, so it gets none.
+   */
+  public void setOnEditRequested(Runnable action)
+  {
+    onEditRequested = action;
+    if (action == null)
+    {
+      setContextMenu(null);
+      return;
+    }
+    MenuItem edit = new MenuItem("Edit...");
+    edit.setOnAction(event -> onEditRequested.run());
+    setContextMenu(new ContextMenu(edit));
+  }
+
   public Game getGame()
   {
     return game;
@@ -78,12 +89,5 @@ public class GameSelectorButton extends Button
   public void unselected()
   {
     setStyle(UNSELECTED_BUTTON_STYLE);
-  }
-
-  public void updateFrom(GameSelectorButton fromButton)
-  {
-    this.game = fromButton.game;
-    this.setGraphic(fromButton.getGraphic());
-    this.rightClickMenu = fromButton.rightClickMenu;
   }
 }

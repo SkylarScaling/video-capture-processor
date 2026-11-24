@@ -10,8 +10,6 @@ import java.util.logging.Logger;
 
 import com.wheezy.apps.vidcapproc.data.Game;
 import com.wheezy.apps.vidcapproc.data.GameCatalog;
-import com.wheezy.apps.vidcapproc.ui.VideoCaptureProcessorResources;
-import com.wheezy.apps.vidcapproc.ui.components.VideoCaptureProcessorStage;
 import com.wheezy.apps.vidcapproc.ui.elements.GamePanel;
 import com.wheezy.components.FXMLController;
 import com.wheezy.utils.ui.AlertDialog;
@@ -144,16 +142,7 @@ public class GameManagerController extends FXMLController
 
   private void openEditor(Game game)
   {
-    VideoCaptureProcessorStage stage = new VideoCaptureProcessorStage(
-        VideoCaptureProcessorResources.GAME_EDITOR_FXML, game == null ? "Add Game" : "Edit Game", true);
-    if (getStage() != null)
-    {
-      stage.initOwner(getStage());
-    }
-    GameEditorController editor = (GameEditorController) stage.getController();
-    editor.useCatalog(catalog);
-    editor.setGame(game);
-    stage.showAndWait();
+    GameEditorController.open(getStage(), catalog, game);
   }
 
   private void attempt(CatalogChange change)
