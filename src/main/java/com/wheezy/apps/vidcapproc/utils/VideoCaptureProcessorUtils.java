@@ -1,109 +1,95 @@
 package com.wheezy.apps.vidcapproc.utils;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperties;
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperty;
 import com.wheezy.utils.file.FileUtility;
-import com.wheezy.utils.file.FileUtilityReturnCode;
+import com.wheezy.utils.ui.AlertDialog;
 
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 public class VideoCaptureProcessorUtils
 {
-  private static String CLIPS_FILE_EXTENSION = ".clips";
+  private static final Logger logger = Logger.getLogger(VideoCaptureProcessorUtils.class.getName());
 
-  public static void saveNewestFile(SaveActionType sat, File sourceDirectory)
+  /**
+   * Starts moving the newest capture file (and its clips file) to the location
+   * configured for the given action. Must be called on the JavaFX thread: the move
+   * runs on a background thread, and the result is reported with dialogs on the
+   * JavaFX thread.
+   *
+   * @return the running task, or null if nothing was started
+   */
+  public static FileMoveTask saveNewestFile(SaveActionType sat)
   {
-    VideoCaptureProcessorProperty locationProperty = VideoCaptureProcessorProperty.CLIPS_LOCATION_PROPERTY;
-    //FunctionButtonType fb = FunctionButtonType.CLIPS_BUTTON;
+    VideoCaptureProcessorProperties props = VideoCaptureProcessorProperties.getInstance();
 
+    VideoCaptureProcessorProperty destProperty;
     switch (sat)
     {
       case SAVE_KEEPER:
-        locationProperty = VideoCaptureProcessorProperty.KEEPERS_LOCATION_PROPERTY;
-        //fb = FunctionButtonType.KEEPERS_BUTTON;
+        destProperty = VideoCaptureProcessorProperty.KEEPERS_LOCATION_PROPERTY;
         break;
       case SAVE_CLIP:
-        locationProperty = VideoCaptureProcessorProperty.CLIPS_LOCATION_PROPERTY;
-        //fb = FunctionButtonType.CLIPS_BUTTON;
-        break;
-      case CLEANUP:
-        break;
-      case MARK_CLIP:
+        destProperty = VideoCaptureProcessorProperty.CLIPS_LOCATION_PROPERTY;
         break;
       default:
-        break;
+        logger.warning("Save action not supported yet: " + sat);
+        return null;
     }
 
-    File newFile = FileUtility.findNewestFileInDirectory(sourceDirectory.getAbsolutePath());
+    String captureLocation = props.getProperty(VideoCaptureProcessorProperty.CAPTURE_LOCATION_PROPERTY);
+    String destLocation = props.getProperty(destProperty);
+    if (isBlank(captureLocation) || isBlank(destLocation))
+    {
+      AlertDialog.displayErrorDialog("File Save Error", "Locations Not Configured",
+          "Set the capture and destination directories in Settings first.");
+      return null;
+    }
 
-    if (newFile != null)
+    File captureDir = new File(captureLocation);
+    File newFile = captureDir.isDirectory() ? FileUtility.findNewestFileInDirectory(captureLocation) : null;
+    if (newFile == null)
     {
-      String filename = FileUtility.getFilename(newFile, false);
-      new FileMoveTask(filename, new File(VideoCaptureProcessorProperties.getInstance().getProperty(locationProperty)))
-          .run();
+      AlertDialog.displayErrorDialog("File Save Error", "Error During File Save",
+          "There are no files in the directory: " + captureDir.getAbsolutePath());
+      return null;
     }
-    else
+
+    String clipsLocation = props.getProperty(VideoCaptureProcessorProperty.CLIPS_LOCATION_PROPERTY);
+    FileMoveTask task = new FileMoveTask(FileUtility.getFilename(newFile, false), captureDir, new File(destLocation),
+        isBlank(clipsLocation) ? null : new File(clipsLocation));
+
+    task.setOnSucceeded(event ->
     {
-      Alert alert = new Alert(AlertType.ERROR);
-      alert.setTitle("File Save Error");
-      alert.setHeaderText("Error During File Save");
-      alert.setContentText("There are no files in the directory: " + sourceDirectory.getAbsolutePath());
-    }
+      FileMoveTask.Result result = task.getValue();
+      if (!result.succeeded())
+      {
+        AlertDialog.displayAlertDialog(AlertType.WARNING, "Problem Moving Files",
+            "File move was unable to complete for the following reason: ",
+            result.code().getMessage() + " (" + result.detail() + ").\nPlease try again.");
+      }
+    });
+    task.setOnFailed(event ->
+    {
+      Throwable error = task.getException();
+      logger.log(Level.SEVERE, "Error Moving Files", error);
+      AlertDialog.displayErrorDialog("Error Moving Files",
+          "An error was encountered while attempting to move files. Check your video directories.",
+          String.valueOf(error.getMessage()));
+    });
+
+    // Not a daemon thread: closing the window mid-move should not cut a copy short.
+    new Thread(task, "file-move").start();
+    return task;
   }
 
-  protected static FileUtilityReturnCode keepFile(String oldFilename, File destDir, String newFilename)
+  private static boolean isBlank(String value)
   {
-    File[] fileList = FileUtility.getListOfFilesInDirectory(VideoCaptureProcessorProperties.getInstance()
-        .getProperty(VideoCaptureProcessorProperty.CAPTURE_LOCATION_PROPERTY.getName()), oldFilename);
-
-    try
-    {
-      for (File srcFile : fileList)
-      {
-        FileUtilityReturnCode result = FileUtility.moveFiles(srcFile, destDir,
-            newFilename + FileUtility.getFileExtension(srcFile, true));
-
-        if (result != FileUtilityReturnCode.SUCCESS)
-        {
-          Alert alert = new Alert(AlertType.WARNING);
-          alert.setTitle("Problem Moving Files");
-          alert.setHeaderText("File move was unable to complete for the following reason: ");
-          alert.setContentText(result.getMessage() + ".\n" + "Please try again.");
-          alert.showAndWait();
-
-          // TODO
-//          logger.warning("Error encountered while attempting to move file to " + destDir.getCanonicalPath() + " - "
-//              + FileUtility.ERROR_DESCRIPTIONS[result]);
-          // stopProgressBar("Move Failed");
-          // threadRunning = false;
-          return result;
-        }
-      }
-
-      File clipsFile = new File(VideoCaptureProcessorProperties.getInstance().getProperty(
-          VideoCaptureProcessorProperty.CLIPS_LOCATION_PROPERTY) + oldFilename + CLIPS_FILE_EXTENSION);
-      if (clipsFile.exists())
-      {
-        FileUtility.moveFiles(clipsFile, destDir, newFilename + CLIPS_FILE_EXTENSION);
-      }
-    }
-    catch (IOException e)
-    {
-      Alert alert = new Alert(AlertType.ERROR);
-      alert.setTitle("Error Moving Files");
-      alert.setHeaderText("An error was encountered while attempting to move files. Check your video directories.");
-      alert.setContentText(e.getMessage());
-      alert.showAndWait();
-
-      // stopProgressBar("Move Failed");
-      // threadRunning = false;
-      // logger.log(Level.SEVERE, "Error Moving Files", e);
-      return FileUtilityReturnCode.FILE_MOVE_ERROR;
-    }
-    return FileUtilityReturnCode.SUCCESS;
+    return value == null || value.isBlank();
   }
 //
 //  private void markClip()

@@ -1,6 +1,5 @@
 package com.wheezy.apps.vidcapproc.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -10,15 +9,17 @@ import java.util.logging.Logger;
 import com.wheezy.apps.vidcapproc.ui.VideoCaptureProcessorResources;
 import com.wheezy.apps.vidcapproc.ui.components.VideoCaptureProcessorStage;
 import com.wheezy.apps.vidcapproc.ui.elements.GameSelectorButton;
+import com.wheezy.apps.vidcapproc.utils.FileMoveTask;
 import com.wheezy.apps.vidcapproc.utils.SaveActionType;
 import com.wheezy.apps.vidcapproc.utils.VideoCaptureProcessorUtils;
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperties;
-import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperty;
 import com.wheezy.components.FXMLController;
 import com.wheezy.utils.ui.AlertDialog;
 
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 
 public class VideoCaptureProcessorController extends FXMLController
 {
@@ -26,8 +27,11 @@ public class VideoCaptureProcessorController extends FXMLController
 
   private VideoCaptureProcessorProperties propertiesInstance;
   
-  @FXML  
+  @FXML
   private GameSelectorButton gameButton;
+
+  @FXML
+  private Button saveButton;
 
   @Override
   public void initialize(URL location, ResourceBundle resources)
@@ -51,7 +55,20 @@ public class VideoCaptureProcessorController extends FXMLController
   @FXML
   void saveVideo(ActionEvent event)
   {
-    VideoCaptureProcessorUtils.saveNewestFile(SaveActionType.SAVE_CLIP, new File(propertiesInstance.getProperty(VideoCaptureProcessorProperty.CAPTURE_LOCATION_PROPERTY)));
+    FileMoveTask task = VideoCaptureProcessorUtils.saveNewestFile(SaveActionType.SAVE_CLIP);
+    if (task != null)
+    {
+      // Block repeat clicks until the move finishes
+      saveButton.setDisable(true);
+      task.stateProperty().addListener((observable, oldState, newState) ->
+      {
+        if (newState == Worker.State.SUCCEEDED || newState == Worker.State.FAILED
+            || newState == Worker.State.CANCELLED)
+        {
+          saveButton.setDisable(false);
+        }
+      });
+    }
   }
 
   @FXML
