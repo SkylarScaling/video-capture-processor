@@ -13,7 +13,7 @@ A small JavaFX desktop app for sorting game-capture recordings. Point it at the 
 
 ```
 mvn clean package
-java -p "target/video-capture-processor-1.0-SNAPSHOT.jar;target/modules" -m com.wheezy.apps.vidcapproc/com.wheezy.apps.vidcapproc.VideoCaptureProcessor
+java --enable-native-access=javafx.graphics -p "target/video-capture-processor-1.0-SNAPSHOT.jar;target/modules" -m com.wheezy.apps.vidcapproc/com.wheezy.apps.vidcapproc.VideoCaptureProcessor
 ```
 
 The app is a Java module (`module-info.java`) and runs on the **module path**, which is how JavaFX is supported. `mvn package` copies the runtime dependencies into `target/modules`, so run the command above from the project folder. The JavaFX jars copied there are the Windows ones; on another OS, change the `win` classifier in `pom.xml`.
