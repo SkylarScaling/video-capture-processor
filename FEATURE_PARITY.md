@@ -139,3 +139,4 @@ Not parity items, but worth knowing about when comparing the two apps.
 - Missing or unset folders show an explanatory dialog instead of failing.
 - Clip marks must come from a parseable filename, and errors say what is wrong and write nothing.
 - The Settings dialog is opened from a gear button, and Cleanup and Settings are icon buttons with tooltips.
+- A move creates a missing destination folder, refuses to overwrite an existing file (nothing is moved), and puts files back if it fails part way; if one cannot be put back, the error names where it is. Swing did none of these.

@@ -88,8 +88,9 @@ public class FileMoveTaskTest
   {
     File captureDir = temp.newFolder("capture");
     Files.writeString(new File(captureDir, "game3.mp4").toPath(), "video");
+    File notAFolder = temp.newFile("not-a-folder");
 
-    FileMoveTask.Result result = new FileMoveTask("game3", captureDir, new File(temp.getRoot(), "missing"), null).call();
+    FileMoveTask.Result result = new FileMoveTask("game3", captureDir, notAFolder, null).call();
 
     assertEquals(FileUtilityReturnCode.INVALID_COPY_LOCATION, result.code());
     assertTrue("source left in place on failure", new File(captureDir, "game3.mp4").exists());
@@ -147,5 +148,153 @@ public class FileMoveTaskTest
     assertTrue(new File(destDir, "ace_game5.clips").exists());
     assertFalse(new File(destDir, "game5.mp4").exists());
     assertFalse(new File(captureDir, "game5.mp4").exists());
+  }
+
+  private File capture(String... names) throws Exception
+  {
+    File captureDir = temp.newFolder("capture");
+    for (String name : names)
+    {
+      Files.writeString(new File(captureDir, name).toPath(), "data " + name);
+    }
+    return captureDir;
+  }
+
+  @Test
+  public void createsAMissingDestinationFolder() throws Exception
+  {
+    File captureDir = capture("game3.mp4", "game3.txt");
+    File dest = new File(temp.getRoot(), "keepers/2024/may"); // two levels missing
+
+    FileMoveTask.Result result = new FileMoveTask("game3", captureDir, dest, null).call();
+
+    assertTrue(result.detail(), result.succeeded());
+    assertTrue(new File(dest, "game3.mp4").exists());
+    assertTrue(new File(dest, "game3.txt").exists());
+    assertFalse(new File(captureDir, "game3.mp4").exists());
+  }
+
+  @Test
+  public void doesNotCreateTheDestinationWhenThereIsNothingToMove() throws Exception
+  {
+    File captureDir = capture("other.mp4");
+    File dest = new File(temp.getRoot(), "keepers");
+
+    FileMoveTask.Result result = new FileMoveTask("game3", captureDir, dest, null).call();
+
+    assertEquals(FileUtilityReturnCode.FILE_DOES_NOT_EXIST, result.code());
+    assertFalse("no stray empty folder", dest.exists());
+  }
+
+  @Test
+  public void reportsADestinationItCannotCreate() throws Exception
+  {
+    File captureDir = capture("game3.mp4");
+    File blocker = temp.newFile("blocker"); // a file where a parent folder would have to be
+
+    FileMoveTask.Result result = new FileMoveTask("game3", captureDir, new File(blocker, "keepers"), null).call();
+
+    assertFalse(result.succeeded());
+    assertTrue(new File(captureDir, "game3.mp4").exists());
+  }
+
+  @Test
+  public void refusesToOverwriteAndMovesNothing() throws Exception
+  {
+    File captureDir = capture("game3.mp4", "game3.txt");
+    File dest = temp.newFolder("keepers");
+    Files.writeString(new File(dest, "game3.txt").toPath(), "older file");
+
+    FileMoveTask.Result result = new FileMoveTask("game3", captureDir, dest, null).call();
+
+    assertEquals(FileUtilityReturnCode.FILE_MOVE_ERROR, result.code());
+    assertTrue(result.detail(), result.detail().contains("game3.txt already exists"));
+    assertTrue("nothing moved", new File(captureDir, "game3.mp4").exists());
+    assertTrue(new File(captureDir, "game3.txt").exists());
+    assertFalse(new File(dest, "game3.mp4").exists());
+    assertEquals("the older file is untouched", "older file", Files.readString(new File(dest, "game3.txt").toPath()));
+  }
+
+  @Test
+  public void putsEarlierFilesBackWhenALaterMoveReportsAFailure() throws Exception
+  {
+    File captureDir = capture("game3.mp4", "game3.txt");
+    File dest = new File(temp.getRoot(), "keepers"); // created by the move, so it should be removed again
+    int[] calls = { 0 };
+
+    FileMoveTask.Result result = FileMoveTask.moveCapture("game3", "game3", captureDir, dest, null, null,
+        (src, destDir, name) ->
+        {
+          if (++calls[0] == 2)
+          {
+            return FileUtilityReturnCode.FILE_MOVE_ERROR;
+          }
+          return com.wheezy.utils.file.FileUtility.moveFiles(src, destDir, name);
+        });
+
+    assertEquals(FileUtilityReturnCode.FILE_MOVE_ERROR, result.code());
+    assertTrue(result.detail(), result.detail().contains("put back"));
+    assertEquals(2, calls[0]);
+    assertEquals(2, captureDir.list().length);
+    assertTrue(new File(captureDir, "game3.mp4").exists());
+    assertTrue(new File(captureDir, "game3.txt").exists());
+    assertEquals("contents survived", "data game3.mp4", Files.readString(new File(captureDir, "game3.mp4").toPath()));
+    assertFalse("the folder the move created is gone again", dest.exists());
+  }
+
+  @Test
+  public void putsEarlierFilesBackWhenALaterMoveThrows() throws Exception
+  {
+    File captureDir = capture("game3.mp4", "game3.txt");
+    File dest = temp.newFolder("keepers"); // already existed, so it must stay
+    int[] calls = { 0 };
+
+    try
+    {
+      FileMoveTask.moveCapture("game3", "game3", captureDir, dest, null, null, (src, destDir, name) ->
+      {
+        if (++calls[0] == 2)
+        {
+          throw new java.io.IOException("disk went away");
+        }
+        return com.wheezy.utils.file.FileUtility.moveFiles(src, destDir, name);
+      });
+      org.junit.Assert.fail("expected the I/O error to be thrown");
+    }
+    catch (java.io.IOException expected)
+    {
+      assertTrue(expected.getMessage(), expected.getMessage().contains("disk went away"));
+    }
+
+    assertTrue(new File(captureDir, "game3.mp4").exists());
+    assertTrue(new File(captureDir, "game3.txt").exists());
+    assertEquals(0, dest.list().length);
+    assertTrue(dest.exists());
+  }
+
+  @Test
+  public void saysSoWhenAFileCannotBePutBack() throws Exception
+  {
+    File captureDir = capture("game3.mp4", "game3.txt");
+    File dest = temp.newFolder("keepers");
+    int[] calls = { 0 };
+    File[] files = captureDir.listFiles();
+    java.util.Arrays.sort(files);
+
+    FileMoveTask.Result result = FileMoveTask.moveCapture("game3", "game3", captureDir, dest, null, null,
+        (src, destDir, name) ->
+        {
+          if (++calls[0] == 2)
+          {
+            // Something new appears where the first file came from, so it cannot go back
+            Files.writeString(files[0].toPath(), "a new file");
+            return FileUtilityReturnCode.FILE_MOVE_ERROR;
+          }
+          return com.wheezy.utils.file.FileUtility.moveFiles(src, destDir, name);
+        });
+
+    assertFalse(result.succeeded());
+    assertTrue(result.detail(), result.detail().contains("could not be put back"));
+    assertTrue("it is left where it can be found", new File(dest, files[0].getName()).exists());
   }
 }

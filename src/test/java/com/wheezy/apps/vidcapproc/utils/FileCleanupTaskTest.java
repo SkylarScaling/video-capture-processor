@@ -114,7 +114,7 @@ public class FileCleanupTaskTest
   {
     File captureDir = temp.newFolder("capture");
     File marksDir = temp.newFolder("clips");
-    File missingSaveDir = new File(temp.getRoot(), "no-such-folder");
+    File missingSaveDir = temp.newFile("not-a-folder"); // a file where the folder should be
     write(captureDir, "marked.mp4");
     write(captureDir, "other.mp4");
     write(marksDir, "marked.clips");
@@ -161,5 +161,21 @@ public class FileCleanupTaskTest
     assertTrue(result.succeeded());
     assertEquals(0, result.deletedFiles());
     assertEquals(0, result.undeletedFiles());
+  }
+
+  @Test
+  public void createsAMissingFolderToSaveClipsInto() throws Exception
+  {
+    File captureDir = temp.newFolder("capture");
+    File marksDir = temp.newFolder("clips");
+    File saveDir = new File(temp.getRoot(), "clips-saved");
+    write(captureDir, "round1.mp4");
+    write(marksDir, "round1.clips");
+
+    FileCleanupTask.Result result = new FileCleanupTask(captureDir, marksDir, saveDir, null).call();
+
+    assertTrue(result.detail(), result.succeeded());
+    assertTrue(new File(saveDir, "round1.mp4").exists());
+    assertTrue(new File(saveDir, "round1.clips").exists());
   }
 }

@@ -42,7 +42,7 @@ The full checklist of what has and hasn't been ported from the Swing app is in [
 Working:
 
 - Settings dialog (capture, keepers and clips folders, always on top)
-- **Keepers** and **Clips** find the newest file in the capture folder and move it to the keepers or clips folder, along with other files that share its name and its `.clips` mark file, on a background thread. If a folder isn't set, the app tells you to configure it in Settings. Both buttons are disabled while a move runs, and problems are reported in a dialog and logged to the console.
+- **Keepers** and **Clips** find the newest file in the capture folder and move it to the keepers or clips folder, along with other files that share its name and its `.clips` mark file, on a background thread. If a folder isn't set, the app tells you to configure it in Settings. Both buttons are disabled while a move runs, and problems are reported in a dialog and logged to the console. A missing destination folder is created, a file that is already in the destination is never overwritten (nothing is moved and you are told), and if a move fails part way the files already moved are put back.
 - **Mark Clip** records how far into the current recording you are, so you can find the moment later. It reads the recording's start time from its filename, so capture files must be named `yyyy-MM-dd HH-mm-ss` (for example `2024-05-17 20-14-06.mp4`, the OBS filename format). Type an optional label first, and it is saved with the mark, as in `12:34 (nice shot)`. Marks are appended to `clips/<capture name>.clips` in the working directory, one per line, and move with the capture when you press Keepers or Clips.
 - **Filename label** (the box under Keepers): text typed there is added to the front of the saved file names by both Keepers and Clips, so `2024-05-17 20-14-06.mp4` becomes `ace_2024-05-17 20-14-06.mp4`. Characters that aren't safe in filenames become underscores, and the box is cleared after a successful move. It is separate from the Mark Clip label.
 - **Cleanup** (the trash button) deletes every file in the capture folder, permanently, after asking you to confirm (it shows the folder and the number of files). If you have marked clips, it then offers **Save Clips First**, which moves the marked captures and their marks to the Clips folder before deleting the rest, or **Delete Everything**. If saving a clip fails, nothing is deleted. Subfolders are never touched, it refuses to clean the top of a drive, and files still open in your recorder are reported as not deleted.
@@ -54,7 +54,6 @@ Working:
 Known issues and gaps:
 
 - Not yet ported from the Swing app: the menu bar and its Ctrl shortcuts, and a log file. See FEATURE_PARITY.md.
-- A multi-file move that fails partway is not rolled back, and a missing destination folder is not created.
 
 ## Project layout
 

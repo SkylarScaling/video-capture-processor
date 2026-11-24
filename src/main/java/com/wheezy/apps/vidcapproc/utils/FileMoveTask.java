@@ -2,6 +2,10 @@ package com.wheezy.apps.vidcapproc.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.wheezy.utils.file.FileUtility;
@@ -78,14 +82,41 @@ public class FileMoveTask extends Task<FileMoveTask.Result>
     return result;
   }
 
+  /** Moves one file into a directory under a new name. Replaceable so tests can make a move fail. */
+  @FunctionalInterface
+  interface Mover
+  {
+    FileUtilityReturnCode move(File srcFile, File destDir, String destFilename) throws IOException;
+  }
+
+  /** A file to move, and the name it gets in the destination. */
+  private record Step(File source, String newName)
+  {
+  }
+
+  /** What was done, so a failure can put everything back. */
+  private record Moved(File original, File moved)
+  {
+  }
+
   /**
    * Moves every file in captureDir whose name starts with {@code filename}, plus
    * the capture's .clips mark file, into destDir as {@code newFilename}.
+   * <p>
+   * A missing destDir is created. Nothing is moved if a file with a new name is already
+   * in destDir. If a move fails part way, the files already moved are put back, and the
+   * destDir this call created is removed again.
    *
    * @param progress where to report progress, or null
    */
   static Result moveCapture(String filename, String newFilename, File captureDir, File destDir, File clipsDir,
       ProgressSink progress) throws IOException
+  {
+    return moveCapture(filename, newFilename, captureDir, destDir, clipsDir, progress, FileUtility::moveFiles);
+  }
+
+  static Result moveCapture(String filename, String newFilename, File captureDir, File destDir, File clipsDir,
+      ProgressSink progress, Mover mover) throws IOException
   {
     File[] captureFiles = FileUtility.getListOfFilesInDirectory(captureDir.getAbsolutePath(), filename);
     if (captureFiles == null || captureFiles.length == 0)
@@ -94,41 +125,127 @@ public class FileMoveTask extends Task<FileMoveTask.Result>
           "No files starting with '" + filename + "' in " + captureDir.getAbsolutePath());
     }
 
-    File clipsFile = clipsDir == null ? null : new File(clipsDir, filename + CLIPS_FILE_EXTENSION);
-    boolean moveClips = clipsFile != null && clipsFile.exists();
-    int total = captureFiles.length + (moveClips ? 1 : 0);
-    int done = 0;
-
+    List<Step> steps = new ArrayList<>();
     for (File srcFile : captureFiles)
     {
       // Keep each file's own extension; only the name part changes
-      FileUtilityReturnCode code = FileUtility.moveFiles(srcFile, destDir,
-          newFilename + FileUtility.getFileExtension(srcFile, true));
-      if (code != FileUtilityReturnCode.SUCCESS)
+      steps.add(new Step(srcFile, newFilename + FileUtility.getFileExtension(srcFile, true)));
+    }
+    File clipsFile = clipsDir == null ? null : new File(clipsDir, filename + CLIPS_FILE_EXTENSION);
+    if (clipsFile != null && clipsFile.exists())
+    {
+      steps.add(new Step(clipsFile, newFilename + CLIPS_FILE_EXTENSION));
+    }
+
+    if (destDir.exists() && !destDir.isDirectory())
+    {
+      return new Result(FileUtilityReturnCode.INVALID_COPY_LOCATION, destDir.getAbsolutePath() + " is not a folder");
+    }
+
+    // Better to refuse up front than to fail half way through
+    for (Step step : steps)
+    {
+      File target = new File(destDir, step.newName());
+      if (target.exists() && !isSameFile(target, step.source()))
       {
-        logger.warning("Unable to move " + srcFile + " to " + destDir + ": " + code.getMessage());
-        return new Result(code, srcFile.getName());
-      }
-      if (progress != null)
-      {
-        progress.update(++done, total);
+        logger.warning("Not moving " + filename + ": " + target + " already exists");
+        return new Result(FileUtilityReturnCode.FILE_MOVE_ERROR,
+            step.newName() + " already exists in " + destDir.getAbsolutePath());
       }
     }
 
-    if (moveClips)
+    boolean createdDestDir = false;
+    if (!destDir.exists())
     {
-      FileUtilityReturnCode code = FileUtility.moveFiles(clipsFile, destDir, newFilename + CLIPS_FILE_EXTENSION);
-      if (code != FileUtilityReturnCode.SUCCESS)
+      try
       {
-        logger.warning("Unable to move " + clipsFile + " to " + destDir + ": " + code.getMessage());
-        return new Result(code, clipsFile.getName());
+        Files.createDirectories(destDir.toPath());
+        createdDestDir = true;
       }
-      if (progress != null)
+      catch (IOException e)
       {
-        progress.update(++done, total);
+        logger.warning("Unable to create " + destDir + ": " + e);
+        return new Result(FileUtilityReturnCode.DIRECTORY_CREATION_ERROR, destDir.getAbsolutePath());
       }
+    }
+
+    List<Moved> moved = new ArrayList<>();
+    try
+    {
+      for (Step step : steps)
+      {
+        FileUtilityReturnCode code = mover.move(step.source(), destDir, step.newName());
+        if (code != FileUtilityReturnCode.SUCCESS)
+        {
+          logger.warning("Unable to move " + step.source() + " to " + destDir + ": " + code.getMessage());
+          String note = putBack(moved, createdDestDir ? destDir : null);
+          return new Result(code, step.source().getName() + note);
+        }
+        moved.add(new Moved(step.source(), new File(destDir, step.newName())));
+        if (progress != null)
+        {
+          progress.update(moved.size(), steps.size());
+        }
+      }
+    }
+    catch (IOException e)
+    {
+      logger.log(Level.WARNING, "Unable to move " + filename + " to " + destDir, e);
+      String note = putBack(moved, createdDestDir ? destDir : null);
+      throw note.isEmpty() ? e : new IOException(e.getMessage() + note, e);
     }
 
     return new Result(FileUtilityReturnCode.SUCCESS, newFilename);
+  }
+
+  private static boolean isSameFile(File a, File b) throws IOException
+  {
+    return a.getCanonicalFile().equals(b.getCanonicalFile());
+  }
+
+  /**
+   * Moves already-moved files back, newest first, and removes the folder this move created
+   * if that leaves it empty.
+   *
+   * @return text to add to the failure detail: empty if nothing had been moved
+   */
+  private static String putBack(List<Moved> moved, File createdDestDir)
+  {
+    if (moved.isEmpty())
+    {
+      if (createdDestDir != null)
+      {
+        createdDestDir.delete();
+      }
+      return "";
+    }
+
+    List<String> stuck = new ArrayList<>();
+    for (int i = moved.size() - 1; i >= 0; i--)
+    {
+      Moved done = moved.get(i);
+      try
+      {
+        if (!isSameFile(done.original(), done.moved())) // a file that never really moved needs nothing
+        {
+          Files.move(done.moved().toPath(), done.original().toPath());
+        }
+      }
+      catch (IOException e)
+      {
+        logger.log(Level.WARNING, "Unable to put " + done.moved() + " back to " + done.original(), e);
+        stuck.add(done.moved().getAbsolutePath());
+      }
+    }
+
+    if (!stuck.isEmpty())
+    {
+      return ". Some files that were already moved could not be put back: " + String.join(", ", stuck);
+    }
+    if (createdDestDir != null)
+    {
+      createdDestDir.delete(); // only succeeds when empty
+    }
+    return ". The files already moved were put back.";
   }
 }

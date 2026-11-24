@@ -37,4 +37,4 @@ java --enable-native-access=javafx.graphics -p "target/video-capture-processor-1
 
 - Source files use CRLF line endings; keep them when editing.
 - `.classpath`, `.project`, `.settings` and `.idea` are gitignored (Eclipse/IntelliJ project files are local only).
-- `FileUtility.moveFiles` does not create a missing destination directory for a file move (it returns `INVALID_COPY_LOCATION`), and a multi-file move that fails midway is not rolled back.
+- `FileUtility.moveFiles` does not create a missing destination directory and a multi-file move through it is not atomic; `FileMoveTask.moveCapture` adds those guarantees itself: it creates the destination (removing it again if the move fails and leaves it empty), refuses up front if a target file already exists, and puts already-moved files back when a later move fails or throws. Keep new move code going through `moveCapture`.
