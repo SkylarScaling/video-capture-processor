@@ -2,13 +2,12 @@ package com.wheezy.apps.vidcapproc.ui.elements;
 
 import javafx.scene.control.Button;
 import com.wheezy.apps.vidcapproc.data.Game;
-import com.wheezy.apps.vidcapproc.ui.VideoCaptureProcessorResources;
+import com.wheezy.apps.vidcapproc.ui.GameIcons;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
@@ -43,9 +42,7 @@ public class GameSelectorButton extends Button
     rightClickMenu.getItems().add(editGameMenuItem);
 
     ImageView imageView = new ImageView();
-    imageView.setImage(new Image(getClass().getClassLoader()
-        .getResourceAsStream(game.getIconImageFilepath() == null ? VideoCaptureProcessorResources.DEFAULT_GAME_ICON_PATH
-            : game.getIconImageFilepath())));
+    imageView.setImage(GameIcons.load(game));
     imageView.setFitHeight(GAME_BUTTON_HEIGHT - 10);
     imageView.setFitWidth(GAME_BUTTON_WIDTH- 10);
     DropShadow dropShadow = new DropShadow();

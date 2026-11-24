@@ -33,6 +33,8 @@ Open **Settings** in the app to choose:
 
 Settings are saved to `CapProcConfig.xml` in the directory you launch the app from (it is gitignored). Start the app from the same directory each time, or it will create a fresh config.
 
+The same directory also holds the rest of the app's data, all gitignored: `SavedGames.xml` (your games), `images/` (game icons), and `clips/` (clip marks). If you used the Swing app, copy its `SavedGames.xml` into this directory and your games appear in the game manager.
+
 ## Status
 
 The full checklist of what has and hasn't been ported from the Swing app is in [FEATURE_PARITY.md](FEATURE_PARITY.md). In short:
@@ -44,11 +46,12 @@ Working:
 - **Mark Clip** records how far into the current recording you are, so you can find the moment later. It reads the recording's start time from its filename, so capture files must be named `yyyy-MM-dd HH-mm-ss` (for example `2024-05-17 20-14-06.mp4`, the OBS filename format). Type an optional label first, and it is saved with the mark, as in `12:34 (nice shot)`. Marks are appended to `clips/<capture name>.clips` in the working directory, one per line, and move with the capture when you press Keepers or Clips.
 - **Filename label** (the box under Keepers): text typed there is added to the front of the saved file names by both Keepers and Clips, so `2024-05-17 20-14-06.mp4` becomes `ace_2024-05-17 20-14-06.mp4`. Characters that aren't safe in filenames become underscores, and the box is cleared after a successful move. It is separate from the Mark Clip label.
 - **Cleanup** (the trash button) deletes every file in the capture folder, permanently, after asking you to confirm (it shows the folder and the number of files). If you have marked clips, it then offers **Save Clips First**, which moves the marked captures and their marks to the Clips folder before deleting the rest, or **Delete Everything**. If saving a clip fails, nothing is deleted. Subfolders are never touched, it refuses to clean the top of a drive, and files still open in your recorder are reported as not deleted.
+- **Game manager** (click the game button at the top left, then **Manage Games...**): lists your games with their icons, filename labels and whether each is displayed. Add, edit, delete (after confirming), reorder with the arrows, and click a game to show or hide it. Games are saved to `SavedGames.xml` as soon as you change them, in the same format as the Swing app. The editor takes a title (unique), an optional filename label (letters, numbers, dashes, underscores and periods) and an icon, which is scaled to fit 64×64 and stored in `images/`. A game whose icon file is missing shows a default icon.
 - **Hotkeys:** **F1** presses Keepers, **F2** presses Clips and **F3** presses Mark Clip, anywhere in the main window (including while typing a label). A button flashes briefly whenever it is used. A hotkey does nothing while its button is disabled, for example during a file move.
 
 Known issues and gaps:
 
-- Not yet ported from the Swing app: the game selector and manager (adding, editing, reordering and persisting games), and with them the game label in saved file names.
+- Not yet ported from the Swing app: choosing the current game in the game selector (the dialog opens and leads to the manager, but cannot select a game yet), and with it the game label in saved file names.
 - A multi-file move that fails partway is not rolled back, and a missing destination folder is not created.
 
 ## Project layout

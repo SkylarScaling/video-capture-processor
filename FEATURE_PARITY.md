@@ -74,12 +74,17 @@ Tracks what the original Swing app ([`VideoCaptureProcessor`](https://github.com
 
 ## C. Game selector
 
-- [ ] **C1. Game collection stored in `SavedGames.xml`.** Ordered list of games, each with title (unique), filename label, icon path and a "displayed" flag.
+- [x] **C1. Game collection stored in `SavedGames.xml`.** Ordered list of games, each with title (unique), filename label, icon path and a "displayed" flag.
   - Swing: `GameCollection`, `GameSet`, `GameModel`, `GameController`, JAXB. The model keeps a `backup.bak` copy of the file when saving.
-  - Port notes: only the `Game` bean exists (already JAXB). Nothing loads or saves a collection. **Decide:** keep the same XML format so existing `SavedGames.xml` files keep working? The file stores absolute icon paths. Replace the Swing `Observable`-based model with something current.
+  - Port notes: done (`GameCatalog`, `GameCollection`), with decisions:
+    - **Same XML format** as Swing, so an existing `SavedGames.xml` loads unchanged. Checked against a real 61-game file. Copy it next to `CapProcConfig.xml` (the working directory) to bring your games over.
+    - The model is an observable list that screens listen to, replacing Swing's `Observable`.
+    - Every change is saved immediately and **undone in memory if the save fails**. Saves write a temporary file and swap it in, and the previous version is kept as `SavedGames.xml.bak`.
+    - An **unreadable file is never silently replaced**: a copy is kept as `SavedGames.xml.unreadable` and the user is told. Games with no title, and repeats of a title (ignoring case), are skipped on load.
+    - `Game.hashCode` now agrees with `equals` (both ignore case); before, they disagreed.
 - [ ] **C2. Game selector** shows icon buttons for displayed games, plus a clear-game ("None") button, with the selected game highlighted.
   - Swing: grid of 5 icons per row, tooltip shows the title, selected game gets a red 4 px border, and the name shows in a label.
-  - Port notes: `GameSelectorDialog.fxml` and the game button on the main window exist, but selection is not wired up. **Decide:** the Swing selector is inline and expands the main window; the port's FXML is a separate dialog.
+  - Port notes: `GameSelectorDialog.fxml` and the game button on the main window exist, but selection is not wired up. The dialog's "Manage Games..." button now opens the game manager (D1), and "Done" closes it. The dialog could not load at all before (a bad `<children>` element around its scroll pane); that is fixed. **Decide:** the Swing selector is inline and expands the main window; the port's FXML is a separate dialog.
 - [ ] **C3. Selected game is remembered** between runs (`SelectedGame`).
 - [ ] **C4. Show or hide the selector**, remembered between runs (`GameSelectorShow`), with the window resizing to fit.
   - Port notes: only relevant if the selector stays inline (see C2).
@@ -87,17 +92,25 @@ Tracks what the original Swing app ([`VideoCaptureProcessor`](https://github.com
 
 ## D. Game manager
 
-- [ ] **D1. Game manager window** listing every game with its icon, title and filename format (`<label>_<filename>`).
-  - Swing: `GameManager` and `GamePanel`. `GameManager.fxml` and `GamePanel.fxml` exist as unwired scaffolding.
-- [ ] **D2. Add, edit and delete games.**
-- [ ] **D3. Reorder games** with up and down.
-  - Port notes: the Swing TODO list also wants send-to-top, send-to-bottom, and drag and drop.
-- [ ] **D4. Click a game to toggle whether it is displayed** in the selector.
-- [ ] **D5. Game editor** with title, filename label, and an icon chosen with a file browser and preview.
+- [x] **D1. Game manager window** listing every game with its icon, title and filename format (`<label>_<filename>`).
+  - Swing: `GameManager` and `GamePanel`.
+  - Port notes: done (`GameManagerController`, `GamePanel`). Opened from the game selector dialog's "Manage Games..." button for now. Rows show whether a game is displayed, a hidden game is dimmed, and the header shows a count ("61 games, 14 displayed"). The scroll position is kept when a row changes. A game whose icon file is missing shows the default icon.
+- [x] **D2. Add, edit and delete games.**
+  - Port notes: done. **Delete now asks for confirmation** (Swing deleted at once); the icon file is not deleted. If a change cannot be saved, it is undone and the user is told.
+- [x] **D3. Reorder games** with up and down.
+  - Port notes: done, with the arrows disabled at the ends. Send-to-top, send-to-bottom and drag and drop (from the Swing TODO list) are not done.
+- [x] **D4. Click a game to toggle whether it is displayed** in the selector.
+  - Port notes: done. Clicking the Edit, Delete or arrow buttons does not toggle.
+- [x] **D5. Game editor** with title, filename label, and an icon chosen with a file browser and preview.
   - Swing: `GameEditor`. Title must be unique. The chosen image is resized to 64×64 and saved as a PNG under `images/`. A default icon is used until one is chosen.
-  - Port notes: **Decide:** where icons should live (Swing uses a working-directory `images/` folder; the port bundles only `default.jpg`). Known Swing bug to fix while porting: the filename label is not checked for characters that are invalid in filenames.
-- [ ] **D6. Image helpers** for resizing and previewing icons.
-  - Swing: `ImageUtility` and `ImagePreviewPanel` under `com.wheezy.utils.image`, not yet copied into this repo.
+  - Port notes: done (`GameEditorController`), with decisions:
+    - **Icons are stored in an `images/` folder in the working directory** (named after the game, never overwriting another game's icon) and recorded with a **relative path** such as `images/Battlefield_3.png`, so the games file survives moving to another drive. Old absolute paths keep working.
+    - **The filename label is now validated** (letters, numbers, dashes, underscores, periods; or blank), which fixes the known Swing gap, and the editor shows how files will be named. Titles must be unique ignoring case.
+    - Choosing an image remembers the folder for next time (B5). Supported images are what JavaFX reads: PNG, JPG, GIF and BMP (TIFF, which Swing accepted, is not).
+    - If the icon cannot be copied into `images/`, the game keeps pointing at the original file, as in Swing.
+- [x] **D6. Image helpers** for resizing and previewing icons.
+  - Swing: `ImageUtility` and `ImagePreviewPanel` under `com.wheezy.utils.image`.
+  - Port notes: done differently. Instead of copying the Swing AWT helpers, `GameIcons` uses JavaFX's own image scaling (fit within 64×64, aspect kept) and writes the PNG with `ImageIO`.
 
 ## E. Ideas from the Swing TODO list
 

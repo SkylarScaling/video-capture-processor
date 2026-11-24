@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<gameCollection>
+  <gameSet>
+    <displayed>true</displayed>
+    <filenameLabel>BF3</filenameLabel>
+    <gameTitle>Battlefield 3</gameTitle>
+    <iconImageFilepath>D:\Somewhere\images\BF3.png</iconImageFilepath>
+  </gameSet>
+  <gameSet>
+    <displayed>false</displayed>
+    <filenameLabel>BO2</filenameLabel>
+    <gameTitle>Black Ops 2</gameTitle>
+    <iconImageFilepath>D:\Somewhere\images\BO2.png</iconImageFilepath>
+  </gameSet>
+  <gameSet>
+    <displayed>true</displayed>
+    <filenameLabel>CAFE</filenameLabel>
+    <gameTitle>Caf&#233; &amp; Bar</gameTitle>
+    <iconImageFilepath>images/CAFE.png</iconImageFilepath>
+  </gameSet>
+  <gameSet>
+    <displayed>true</displayed>
+    <filenameLabel>DUP</filenameLabel>
+    <gameTitle>black ops 2</gameTitle>
+    <iconImageFilepath>images/DUP.png</iconImageFilepath>
+  </gameSet>
+  <gameSet>
+    <displayed>true</displayed>
+    <filenameLabel>NONE</filenameLabel>
+    <iconImageFilepath>images/NONE.png</iconImageFilepath>
+  </gameSet>
+</gameCollection>

@@ -83,7 +83,8 @@ public class Game
   {
     if (gameTitle != null)
     {
-      return gameTitle.hashCode();
+      // Must agree with equals(), which ignores case
+      return gameTitle.toLowerCase(java.util.Locale.ROOT).hashCode();
     }
 
     return super.hashCode();

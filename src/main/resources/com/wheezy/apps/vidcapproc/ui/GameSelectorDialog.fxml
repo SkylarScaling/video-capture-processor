@@ -45,19 +45,19 @@
 			<effect>
 				<InnerShadow />
 			</effect>
-			<children>
+			<content>
 				<FlowPane fx:id="allGamesFlowPane" prefHeight="200.0"
 					prefWidth="200.0" />
-			</children>
+			</content>
 		</ScrollPane>
-		<Button fx:id="doneButton"
+		<Button fx:id="doneButton" onAction="#close"
 			layoutX="417.0" layoutY="422.0"
 			style="-fx-background-color: #fefefeff;" text="Done">
 			<font>
 				<Font name="Montserrat Regular" size="12.0" />
 			</font>
 		</Button>
-		<Button fx:id="manageGamesButton"
+		<Button fx:id="manageGamesButton" onAction="#manageGames"
 			layoutX="20.0" layoutY="422.0"
 			style="-fx-background-color: #fefefeff;" text="Manage Games ...">
 			<font>
