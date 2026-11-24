@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.nio.file.Files;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -12,6 +13,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.wheezy.apps.vidcapproc.controller.VideoCaptureProcessorController;
+
+import com.wheezy.apps.vidcapproc.FxTestSupport;
 
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -24,7 +27,7 @@ import javafx.scene.control.TextField;
 public class MainWindowFxmlTest
 {
   @BeforeClass
-  public static void startToolkit()
+  public static void startToolkit() throws Exception
   {
     try
     {
@@ -34,6 +37,9 @@ public class MainWindowFxmlTest
     {
       // fine: another test started it
     }
+
+    // The main window reads the settings, games and selected game, so give it temporary ones
+    FxTestSupport.useTemporaryAppData(Files.createTempDirectory("vcp-test").toFile());
   }
 
   @Test

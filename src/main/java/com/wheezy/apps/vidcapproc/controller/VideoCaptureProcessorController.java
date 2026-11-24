@@ -8,15 +8,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.function.Predicate;
 
+import com.wheezy.apps.vidcapproc.data.Game;
+import com.wheezy.apps.vidcapproc.data.GameCatalog;
+import com.wheezy.apps.vidcapproc.data.GameSelection;
 import com.wheezy.apps.vidcapproc.ui.ButtonFlash;
 import com.wheezy.apps.vidcapproc.ui.VideoCaptureProcessorResources;
 import com.wheezy.apps.vidcapproc.ui.components.VideoCaptureProcessorStage;
 import com.wheezy.apps.vidcapproc.ui.elements.GameSelectorButton;
+import com.wheezy.apps.vidcapproc.ui.elements.GameSelectorPanel;
 import com.wheezy.apps.vidcapproc.utils.FileCleanupTask;
 import com.wheezy.apps.vidcapproc.utils.FileMoveTask;
 import com.wheezy.apps.vidcapproc.utils.SaveActionType;
 import com.wheezy.apps.vidcapproc.utils.VideoCaptureProcessorUtils;
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperties;
+import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperty;
 import com.wheezy.components.FXMLController;
 import com.wheezy.utils.ui.AlertDialog;
 
@@ -24,6 +29,7 @@ import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -32,6 +38,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
 
 public class VideoCaptureProcessorController extends FXMLController
 {
@@ -41,6 +49,9 @@ public class VideoCaptureProcessorController extends FXMLController
   
   @FXML
   private GameSelectorButton gameButton;
+
+  @FXML
+  private GameSelectorPanel gameSelectorPanel;
 
   @FXML
   private Button keepersButton;
@@ -96,6 +107,66 @@ public class VideoCaptureProcessorController extends FXMLController
           "An error was encountered while reading from the properties file.", ioe.getMessage());
 
       logger.log(Level.SEVERE, "Property Read Error", ioe);
+    }
+
+    // After the properties are loaded: the remembered game and selector state come from them
+    setUpGameSelector();
+  }
+
+  private void setUpGameSelector()
+  {
+    GameSelection selection = GameSelection.getInstance();
+    gameSelectorPanel.bind(GameCatalog.getInstance(), selection);
+    gameSelectorPanel.setOnManageGames(this::openGameManager);
+
+    // The game button always shows the selected game, so it is useful even with the selector collapsed
+    showSelectedGame(selection.getSelectedGame());
+    selection.selectedGameProperty().addListener((observable, oldGame, newGame) -> showSelectedGame(newGame));
+
+    // Start as the user left it. This comes before the listener below, so it neither saves nor resizes.
+    gameSelectorPanel.setExpanded(Boolean
+        .parseBoolean(propertiesInstance.getProperty(VideoCaptureProcessorProperty.GAME_SELECTOR_VISIBLE_PROPERTY)));
+    gameSelectorPanel.expandedProperty()
+        .addListener((observable, wasExpanded, isExpanded) -> gameSelectorToggled(isExpanded));
+  }
+
+  private void showSelectedGame(Game game)
+  {
+    gameButton.setGame(game == null ? new Game() : game);
+  }
+
+  /** Remembers whether the selector is open, and grows or shrinks the window to match. */
+  private void gameSelectorToggled(boolean isExpanded)
+  {
+    propertiesInstance.setProperty(VideoCaptureProcessorProperty.GAME_SELECTOR_VISIBLE_PROPERTY,
+        Boolean.toString(isExpanded));
+    try
+    {
+      propertiesInstance.storeProperties();
+    }
+    catch (IOException e)
+    {
+      // Not worth interrupting the user over
+      logger.log(Level.WARNING, "Property Store Error", e);
+    }
+
+    Stage stage = getStage();
+    if (stage != null && stage.isShowing())
+    {
+      stage.sizeToScene();
+      keepOnScreen(stage);
+    }
+  }
+
+  /** A window that grew to the right near the edge of the screen is moved left so it is not cut off. */
+  private static void keepOnScreen(Stage stage)
+  {
+    Rectangle2D bounds = Screen.getScreensForRectangle(stage.getX(), stage.getY(), 1, 1).stream().findFirst()
+        .orElse(Screen.getPrimary()).getVisualBounds();
+    double overflow = stage.getX() + stage.getWidth() - bounds.getMaxX();
+    if (overflow > 0)
+    {
+      stage.setX(Math.max(bounds.getMinX(), stage.getX() - overflow));
     }
   }
 
@@ -201,10 +272,15 @@ public class VideoCaptureProcessorController extends FXMLController
   }
 
   @FXML
-  void openGameSelectorDialog(ActionEvent event)
+  void toggleGameSelector(ActionEvent event)
+  {
+    gameSelectorPanel.toggle();
+  }
+
+  private void openGameManager()
   {
     VideoCaptureProcessorStage stage = new VideoCaptureProcessorStage(
-        VideoCaptureProcessorResources.GAME_SELECTOR_DIALOG_FXML, "Game Selector", true);
+        VideoCaptureProcessorResources.GAME_MANAGER_FXML, "Manage Games", true);
     stage.initOwner(getStage());
     stage.showAndWait();
   }

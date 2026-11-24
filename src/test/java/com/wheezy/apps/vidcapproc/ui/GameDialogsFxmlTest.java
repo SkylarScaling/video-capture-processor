@@ -47,17 +47,6 @@ public class GameDialogsFxmlTest
   }
 
   @Test
-  public void theGameSelectorLoadsAndCanOpenTheManager() throws Exception
-  {
-    Parent root = load(VideoCaptureProcessorResources.GAME_SELECTOR_DIALOG_FXML);
-
-    Button manage = (Button) root.lookup("#manageGamesButton");
-    assertNotNull(manage);
-    assertNotNull("Manage Games... does something", manage.getOnAction());
-    assertNotNull("Done closes the dialog", ((Button) root.lookup("#doneButton")).getOnAction());
-  }
-
-  @Test
   public void theGameManagerLoadsWithItsControls() throws Exception
   {
     Parent root = load(VideoCaptureProcessorResources.GAME_MANAGER_FXML);

@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public class PropertiesUtility
 {
-  private static Properties props = new Properties();
+  private final Properties props = new Properties();
   private String propsFilename;
   private File propsFile;
 

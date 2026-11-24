@@ -2,6 +2,8 @@
 
 <?import javafx.scene.control.Button?>
 <?import com.wheezy.apps.vidcapproc.ui.elements.GameSelectorButton?>
+<?import com.wheezy.apps.vidcapproc.ui.elements.GameSelectorPanel?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tooltip?>
@@ -15,7 +17,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="320.0" prefWidth="277.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wheezy.apps.vidcapproc.controller.VideoCaptureProcessorController">
+<HBox style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wheezy.apps.vidcapproc.controller.VideoCaptureProcessorController">
+	<children>
+<AnchorPane minWidth="277.0" prefHeight="320.0" prefWidth="277.0" style="-fx-background-color: white;">
 	<children>
 		<VBox alignment="CENTER" layoutX="125.0" AnchorPane.leftAnchor="125.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="0.0">
 			<children>
@@ -82,7 +86,7 @@
 		</Button>
 		<StackPane prefHeight="84.0" prefWidth="84.0" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="0.0">
 			<children>
-				<GameSelectorButton fx:id="gameButton" onAction="#openGameSelectorDialog" contentDisplay="CENTER" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" text=" ">
+				<GameSelectorButton fx:id="gameButton" onAction="#toggleGameSelector" contentDisplay="CENTER" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" text=" ">
                <StackPane.margin>
                   <Insets />
                </StackPane.margin></GameSelectorButton>
@@ -108,3 +112,6 @@
 		</Button>
 	</children>
 </AnchorPane>
+<GameSelectorPanel fx:id="gameSelectorPanel" />
+	</children>
+</HBox>

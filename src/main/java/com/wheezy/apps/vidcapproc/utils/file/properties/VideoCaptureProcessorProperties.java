@@ -29,12 +29,24 @@ public class VideoCaptureProcessorProperties extends PropertiesUtility
     super(CONFIG_FILENAME);
   }
 
-  public static VideoCaptureProcessorProperties getInstance()
+  /** Uses a different file than the app's own, which tests use to avoid touching the real settings. */
+  public VideoCaptureProcessorProperties(String filename)
+  {
+    super(filename);
+  }
+
+  public static synchronized VideoCaptureProcessorProperties getInstance()
   {
     if (instance == null)
     {
       instance = new VideoCaptureProcessorProperties();
     }
     return instance;
+  }
+
+  /** Replaces the app's settings. Tests use this so that they never read or change the real settings file. */
+  public static synchronized void setInstance(VideoCaptureProcessorProperties properties)
+  {
+    instance = properties;
   }
 }

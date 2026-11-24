@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.file.Files;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -11,6 +12,8 @@ import java.util.function.Supplier;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.wheezy.apps.vidcapproc.FxTestSupport;
 
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -23,7 +26,7 @@ import javafx.scene.input.KeyCodeCombination;
 public class HotkeysTest
 {
   @BeforeClass
-  public static void startToolkit()
+  public static void startToolkit() throws Exception
   {
     try
     {
@@ -33,6 +36,9 @@ public class HotkeysTest
     {
       // fine: another test started it
     }
+
+    // The main window reads the settings, games and selected game, so give it temporary ones
+    FxTestSupport.useTemporaryAppData(Files.createTempDirectory("vcp-test").toFile());
   }
 
   private static <T> T onFxThread(Supplier<T> work) throws Exception

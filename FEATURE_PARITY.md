@@ -47,8 +47,8 @@ Tracks what the original Swing app ([`VideoCaptureProcessor`](https://github.com
 
 - [x] **A9. Button press feedback.** Buttons flash for 250 ms when used (`ButtonSwingWorker`), for example when a hotkey triggers them.
   - Port notes: done (`ButtonFlash`). The button darkens briefly on any use, click or hotkey, and a second press mid-flash restores the original look correctly.
-- [ ] **A10. Game label in saved filenames.** With a game selected, the name becomes `<game filename label>_<label text>_<original name>`.
-  - Port notes: `CaptureNaming.buildName` and `FileCleanupTask` already take a game label, so this is waiting only on the game selector (section C). Swing applied the game label only when a game was selected, and Save Clips in Cleanup used the game label alone (without the label text).
+- [x] **A10. Game label in saved filenames.** With a game selected, the name becomes `<game filename label>_<label text>_<original name>`.
+  - Port notes: done. Keepers and Clips put the selected game's label first, then the Filename label box text, then the original name (`BF3_ace_2024-05-17 20-14-06.mp4`). With no game selected, or a game with no label, that part is left out. Cleanup's *Save Clips First* uses the game label alone, as in Swing.
 
 ## B. Settings and window
 
@@ -82,12 +82,13 @@ Tracks what the original Swing app ([`VideoCaptureProcessor`](https://github.com
     - Every change is saved immediately and **undone in memory if the save fails**. Saves write a temporary file and swap it in, and the previous version is kept as `SavedGames.xml.bak`.
     - An **unreadable file is never silently replaced**: a copy is kept as `SavedGames.xml.unreadable` and the user is told. Games with no title, and repeats of a title (ignoring case), are skipped on load.
     - `Game.hashCode` now agrees with `equals` (both ignore case); before, they disagreed.
-- [ ] **C2. Game selector** shows icon buttons for displayed games, plus a clear-game ("None") button, with the selected game highlighted.
+- [x] **C2. Game selector** shows icon buttons for displayed games, plus a clear-game ("None") button, with the selected game highlighted.
   - Swing: grid of 5 icons per row, tooltip shows the title, selected game gets a red 4 px border, and the name shows in a label.
-  - Port notes: `GameSelectorDialog.fxml` and the game button on the main window exist, but selection is not wired up. The dialog's "Manage Games..." button now opens the game manager (D1), and "Done" closes it. The dialog could not load at all before (a bad `<children>` element around its scroll pane); that is fixed. **Decide:** the Swing selector is inline and expands the main window; the port's FXML is a separate dialog.
-- [ ] **C3. Selected game is remembered** between runs (`SelectedGame`).
-- [ ] **C4. Show or hide the selector**, remembered between runs (`GameSelectorShow`), with the window resizing to fit.
-  - Port notes: only relevant if the selector stays inline (see C2).
+  - Port notes: done (`GameSelectorPanel`, `GameSelection`), **decided: a collapsible panel on the right side of the main window**. A narrow handle (with an arrow) is always visible; clicking it, or the game button, opens the panel and the window widens; clicking again collapses it and the window narrows back (a window near the right screen edge is moved left so it is not cut off). The grid is four icons per row (Swing: five, with a window that grew taller), scrolls when there are more games, and shows only displayed games. The first icon, with a "?", means no game. The selected icon gets the red border and its title shows above the grid. The panel does not close when you pick a game; click the handle to close it. **Manage Games...** is at the bottom of the panel. The old separate Game Selector dialog was removed.
+- [x] **C3. Selected game is remembered** between runs (`SelectedGame`).
+  - Port notes: done. It follows the game if you rename it in the manager, and clears if you delete it. Hiding the selected game keeps it selected (its name still shows, without an icon).
+- [x] **C4. Show or hide the selector**, remembered between runs (`GameSelectorShow`), with the window resizing to fit.
+  - Port notes: done. It starts collapsed the first time. Unlike Swing, the window grows sideways, not taller.
 - [ ] **C5. Right-click menu** on a game button with "Edit...".
 
 ## D. Game manager
@@ -121,7 +122,7 @@ These were never built in Swing. They are recorded here so they can be taken up,
 - [ ] **E3.** Put keepers and clips into per-game folders.
 - [ ] **E4.** Faster file movement (native copy).
 - [ ] **E5.** Write timestamp tags into the MP4 metadata, like GoPro.
-- [ ] **E6.** Show the selected game's icon when the game selector is collapsed.
+- [x] **E6.** Show the selected game's icon when the game selector is collapsed. Done: the game button on the main window always shows the selected game's icon.
 - [ ] **E7.** "Game mode" support for game labels.
 - [ ] **E8.** A clip manager, with other video formats and a built-in video player for review.
 - [ ] **E9.** Built-in image search to help find game icons.

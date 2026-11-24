@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.wheezy.apps.vidcapproc.data.GameSelection;
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperties;
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperty;
 import com.wheezy.utils.file.FileUtility;
@@ -69,8 +70,8 @@ public class VideoCaptureProcessorUtils
     }
 
     String captureName = FileUtility.getFilename(newFile, false);
-    // The game label joins in here once games can be selected
-    String newName = CaptureNaming.buildName(null, filenameLabel, captureName);
+    // With a game selected, its label comes first: <game label>_<filename label>_<original name>
+    String newName = CaptureNaming.buildName(selectedGameLabel(), filenameLabel, captureName);
     FileMoveTask task = new FileMoveTask(captureName, newName, captureDir, new File(destLocation),
         new File(ClipMarker.CLIPS_DIRECTORY));
 
@@ -187,7 +188,7 @@ public class VideoCaptureProcessorUtils
       }
     }
 
-    FileCleanupTask task = new FileCleanupTask(captureDir, marksDir, saveDir, null); // game label: not ported yet
+    FileCleanupTask task = new FileCleanupTask(captureDir, marksDir, saveDir, selectedGameLabel());
 
     task.setOnSucceeded(event ->
     {
@@ -215,6 +216,12 @@ public class VideoCaptureProcessorUtils
 
     new Thread(task, "file-cleanup").start();
     return task;
+  }
+
+  /** @return the filename label of the selected game, or null if no game is selected or it has no label */
+  private static String selectedGameLabel()
+  {
+    return GameSelection.getInstance().gameLabel().orElse(null);
   }
 
   private static boolean isBlank(String value)

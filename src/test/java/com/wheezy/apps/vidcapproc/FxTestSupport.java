@@ -1,14 +1,41 @@
 package com.wheezy.apps.vidcapproc;
 
+import java.io.File;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+
+import com.wheezy.apps.vidcapproc.data.GameCatalog;
+import com.wheezy.apps.vidcapproc.data.GameSelection;
+import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperties;
 
 import javafx.application.Platform;
 
 /** Helpers for tests that need the JavaFX toolkit. */
 public final class FxTestSupport
 {
+  /** The app's settings, games and selected game, as the tests see them. */
+  public record AppData(VideoCaptureProcessorProperties properties, GameCatalog catalog, GameSelection selection)
+  {
+  }
+
+  /**
+   * Points the app's settings, games and game selection at fresh files in the given
+   * directory, so a test that loads the main window never reads or changes the real ones.
+   */
+  public static AppData useTemporaryAppData(File directory)
+  {
+    VideoCaptureProcessorProperties properties = new VideoCaptureProcessorProperties(
+        new File(directory, "CapProcConfig.xml").getPath());
+    VideoCaptureProcessorProperties.setInstance(properties);
+
+    GameCatalog catalog = new GameCatalog(new File(directory, "SavedGames.xml"));
+    GameCatalog.setInstance(catalog);
+
+    GameSelection.setInstance(null); // so the next getInstance() is built from the settings and games above
+    return new AppData(properties, catalog, GameSelection.getInstance());
+  }
+
   private FxTestSupport()
   {
   }
