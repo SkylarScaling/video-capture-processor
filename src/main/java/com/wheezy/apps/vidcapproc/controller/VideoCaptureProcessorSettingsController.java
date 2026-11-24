@@ -30,9 +30,13 @@ public class VideoCaptureProcessorSettingsController extends FXMLController
   @FXML
   private TextField keepersTextField;
   @FXML
+  private TextField clipsTextField;
+  @FXML
   private Button captureDirButton;
   @FXML
   private Button keepersDirButton;
+  @FXML
+  private Button clipsDirButton;
   @FXML
   private CheckBox alwaysOnTopCheckBox;
 
@@ -43,6 +47,7 @@ public class VideoCaptureProcessorSettingsController extends FXMLController
     
     captureTextField.setText(propertiesInstance.getProperty(VideoCaptureProcessorProperty.CAPTURE_LOCATION_PROPERTY));
     keepersTextField.setText(propertiesInstance.getProperty(VideoCaptureProcessorProperty.KEEPERS_LOCATION_PROPERTY));
+    clipsTextField.setText(propertiesInstance.getProperty(VideoCaptureProcessorProperty.CLIPS_LOCATION_PROPERTY));
     alwaysOnTopCheckBox.setSelected(Boolean.parseBoolean(propertiesInstance.getProperty(VideoCaptureProcessorProperty.ALWAYS_ON_TOP_PROPERTY)));
   }
 
@@ -67,6 +72,16 @@ public class VideoCaptureProcessorSettingsController extends FXMLController
   }
 
   @FXML
+  void browseForClipsDirectory(ActionEvent event)
+  {
+    File selectedDirectory = FileUtility.browseForDirectory(getStage(), "Select Clips Directory");
+    if (selectedDirectory != null)
+    {
+      clipsTextField.setText(selectedDirectory.getAbsolutePath());
+    }
+  }
+
+  @FXML
   void saveSettings(ActionEvent event)
   {
     propertiesInstance.setProperty(VideoCaptureProcessorProperty.CAPTURE_LOCATION_PROPERTY,
@@ -74,7 +89,10 @@ public class VideoCaptureProcessorSettingsController extends FXMLController
 
     propertiesInstance.setProperty(VideoCaptureProcessorProperty.KEEPERS_LOCATION_PROPERTY,
         keepersTextField.getText());
-    
+
+    propertiesInstance.setProperty(VideoCaptureProcessorProperty.CLIPS_LOCATION_PROPERTY,
+        clipsTextField.getText());
+
     propertiesInstance.setProperty(VideoCaptureProcessorProperty.ALWAYS_ON_TOP_PROPERTY, 
         Boolean.toString(alwaysOnTopCheckBox.isSelected()));
 

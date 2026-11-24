@@ -94,4 +94,19 @@ public class FileMoveTaskTest
     assertEquals(FileUtilityReturnCode.INVALID_COPY_LOCATION, result.code());
     assertTrue("source left in place on failure", new File(captureDir, "game3.mp4").exists());
   }
+
+  @Test
+  public void clipsFileSurvivesWhenClipsDirIsAlsoTheDestination() throws Exception
+  {
+    File captureDir = temp.newFolder("capture");
+    File clipsDir = temp.newFolder("clips");
+    Files.writeString(new File(captureDir, "game4.mp4").toPath(), "video");
+    Files.writeString(new File(clipsDir, "game4.clips").toPath(), "1:23");
+
+    FileMoveTask.Result result = new FileMoveTask("game4", captureDir, clipsDir, clipsDir).call();
+
+    assertTrue(result.detail(), result.succeeded());
+    assertTrue(new File(clipsDir, "game4.mp4").exists());
+    assertEquals("1:23", Files.readString(new File(clipsDir, "game4.clips").toPath()));
+  }
 }

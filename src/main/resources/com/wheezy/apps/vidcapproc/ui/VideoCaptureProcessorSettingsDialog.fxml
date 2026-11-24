@@ -80,6 +80,26 @@
 					</font>
 				</Button>
 
+				<Label text="Clips Folder:" GridPane.rowIndex="2">
+					<font>
+						<Font name="Montserrat Regular" size="12.0" />
+					</font>
+				</Label>
+				<TextField fx:id="clipsTextField"
+					GridPane.columnIndex="1" GridPane.rowIndex="2">
+					<GridPane.margin>
+						<Insets left="15.0" right="15.0" />
+					</GridPane.margin>
+				</TextField>
+				<Button fx:id="clipsDirButton"
+					style="-fx-background-color: #fefefeff;" text="Browse..."
+					GridPane.columnIndex="2" GridPane.halignment="RIGHT"
+					GridPane.rowIndex="2" onAction="#browseForClipsDirectory">
+					<font>
+						<Font name="Montserrat Regular" size="12.0" />
+					</font>
+				</Button>
+
 				<CheckBox fx:id="alwaysOnTopCheckBox" text="Always On Top" GridPane.rowIndex="3">
 					<font>
 						<Font name="Montserrat Regular" size="12.0" />
