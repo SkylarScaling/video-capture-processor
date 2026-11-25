@@ -59,18 +59,18 @@ Tracks what the original Swing app ([`VideoCaptureProcessor`](https://github.com
   - Port notes: done, with the same file format. **Decide:** still read from the working directory. Moving it to a per-user location (such as `%APPDATA%`) would remove the "launch from the same folder" requirement.
 - [x] **B3. Always On Top is applied** to the window, defaulting to on.
   - Swing: File menu check item, **Ctrl+A**. Defaults to true when unset.
-  - Port notes: done. Applied at startup and again when the Settings dialog closes, and on by default when never set, as in Swing. The Ctrl+A shortcut is not ported (see B8). Settings, the other dialogs and error alerts are now owned by the main window, so they cannot open hidden behind it.
+  - Port notes: done. Applied at startup and again when the Settings dialog closes, and on by default when never set, as in Swing. Ctrl+A is the shortcut of the File menu's Always On Top item (see B8). Settings, the other dialogs and error alerts are now owned by the main window, so they cannot open hidden behind it.
 - [x] **B4. Remember the window position.** Saved on close (`FrameLocationX/Y`), restored on launch.
   - Port notes: done (`WindowSettings`). A saved position that is no longer on any screen, for example after unplugging a monitor, is ignored so the window cannot open out of sight. Values are JavaFX coordinates, so positions saved by the Swing app are not carried over.
 - [x] **B5. Remember the last folder browsed** in file choosers (`FileChooserLoc`).
   - Port notes: done. The chooser opens at the folder already in the field, otherwise where the last choice was made. After each choice the parent folder is saved, because the capture, keepers and clips folders are usually siblings.
 - [x] **B6. Close confirmation while a move is running**, with "Close Anyway" / "Cancel".
   - Port notes: done, with a changed meaning. Closing the window does not stop a move or cleanup (its thread is not a daemon, so it finishes in the background), but the result dialogs would never appear, so closing while one runs asks "Close Anyway" / "Cancel" and says the work will finish in the background.
-- [ ] **B7. Log file** (`logs/CapProc.log`).
+- [x] **B7. Log file** (`logs/CapProc.log`).
   - Swing: `java.util.logging` `FileHandler`.
-  - Port notes: the port logs to the console only.
-- [ ] **B8. Menu bar** with File (Always On Top, Set Folders...) and Games (Show Game Selector, Manage Games...) menus, with Ctrl shortcuts (A, S, G).
-  - Port notes: **Decide:** the port uses buttons instead (gear for Settings, the game button for the selector). Decide whether to add the menu bar or keep the compact layout, and if the shortcuts are still wanted.
+  - Port notes: done (`AppLogging`). Everything the app logs goes to `logs/CapProc.log` in the working directory as well as the console, with stack traces, and uncaught exceptions on any thread are logged too. The folder is created if needed. Changes from Swing: one handler on the root logger instead of one per class, a readable text format instead of XML, and a log over 1 MB is set aside as `CapProc.log.1` at startup (Swing appended forever). If the log cannot be created the app still starts.
+- [x] **B8. Menu bar** with File (Always On Top, Set Folders...) and Games (Show Game Selector, Manage Games...) menus, with Ctrl shortcuts (A, S, G).
+  - Port notes: done, decided to add it (the gear and game buttons stay as well). Same items, Alt mnemonics and shortcuts as Swing: **Ctrl+A** Always On Top, **Ctrl+S** Show Game Selector, **Ctrl+G** Manage Games. Always On Top applies at once and is saved; it and Show Game Selector are check items that stay in step with the Settings dialog and the selector panel. While a text box has focus, Ctrl+A selects its text instead, as in Swing. The window is one menu bar taller.
 
 ## C. Game selector
 

@@ -78,7 +78,8 @@ public class MainWindowGameSelectorTest
     FxTestSupport.useTemporaryAppData(temp.getRoot());
     Parent root = loadMainWindow();
 
-    javafx.scene.layout.HBox row = (javafx.scene.layout.HBox) root;
+    // The menu bar is above the row; the row is the controls, then the selector on the right
+    javafx.scene.layout.HBox row = (javafx.scene.layout.HBox) panel(root).getParent();
     assertEquals("controls first, then the selector on the right", 2, row.getChildren().size());
     assertSame(panel(root), row.getChildren().get(1));
   }

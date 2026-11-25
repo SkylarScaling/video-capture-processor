@@ -3,18 +3,25 @@ package com.wheezy.apps.vidcapproc;
 import com.wheezy.apps.vidcapproc.ui.VideoCaptureProcessorResources;
 import com.wheezy.apps.vidcapproc.ui.WindowSettings;
 import com.wheezy.apps.vidcapproc.ui.components.VideoCaptureProcessorStage;
+import com.wheezy.apps.vidcapproc.utils.AppLogging;
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperties;
 import com.wheezy.utils.ui.AlertDialog;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class VideoCaptureProcessor extends Application
 {
+  private static final Logger logger = Logger.getLogger(VideoCaptureProcessor.class.getName());
 
   @Override
   public void start(Stage primaryStage)
   {
+    AppLogging.install();
+
     try
     {
       // Creating the stage loads the FXML, and the controller loads the properties file
@@ -34,7 +41,7 @@ public class VideoCaptureProcessor extends Application
     }
     catch (Exception e)
     {
-      e.printStackTrace();
+      logger.log(Level.SEVERE, "Unable to start the application", e);
     }
   }
 

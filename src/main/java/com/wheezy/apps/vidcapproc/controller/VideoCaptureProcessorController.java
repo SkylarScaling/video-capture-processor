@@ -37,6 +37,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
@@ -82,6 +83,12 @@ public class VideoCaptureProcessorController extends FXMLController
 
   @FXML
   private ProgressBar progressBar;
+
+  @FXML
+  private CheckMenuItem alwaysOnTopMenuItem;
+
+  @FXML
+  private CheckMenuItem showGameSelectorMenuItem;
 
   /** Moves and cleanups in progress. Closing the window while this is above zero asks first. */
   private int runningTasks;
@@ -134,6 +141,8 @@ public class VideoCaptureProcessorController extends FXMLController
       logger.log(Level.SEVERE, "Property Read Error", ioe);
     }
 
+    alwaysOnTopMenuItem.setSelected(propertiesInstance.isAlwaysOnTop());
+
     // After the properties are loaded: the remembered game and selector state come from them
     setUpGameSelector();
   }
@@ -154,6 +163,9 @@ public class VideoCaptureProcessorController extends FXMLController
         .parseBoolean(propertiesInstance.getProperty(VideoCaptureProcessorProperty.GAME_SELECTOR_VISIBLE_PROPERTY)));
     gameSelectorPanel.expandedProperty()
         .addListener((observable, wasExpanded, isExpanded) -> gameSelectorToggled(isExpanded));
+
+    // The Games menu item, the game button and the strip on the panel all show and change the same state
+    showGameSelectorMenuItem.selectedProperty().bindBidirectional(gameSelectorPanel.expandedProperty());
   }
 
   private void showSelectedGame(Game game)
@@ -333,7 +345,37 @@ public class VideoCaptureProcessorController extends FXMLController
     stage.showAndWait();
 
     // The always-on-top setting may have changed
-    getStage().setAlwaysOnTop(propertiesInstance.isAlwaysOnTop());
+    boolean alwaysOnTop = propertiesInstance.isAlwaysOnTop();
+    getStage().setAlwaysOnTop(alwaysOnTop);
+    alwaysOnTopMenuItem.setSelected(alwaysOnTop);
+  }
+
+  /** The File menu's Always On Top item: applies the choice to the window and remembers it. */
+  @FXML
+  void toggleAlwaysOnTop(ActionEvent event)
+  {
+    boolean alwaysOnTop = alwaysOnTopMenuItem.isSelected();
+    if (getStage() != null)
+    {
+      getStage().setAlwaysOnTop(alwaysOnTop);
+    }
+    propertiesInstance.setProperty(VideoCaptureProcessorProperty.ALWAYS_ON_TOP_PROPERTY,
+        Boolean.toString(alwaysOnTop));
+    try
+    {
+      propertiesInstance.storeProperties();
+    }
+    catch (IOException e)
+    {
+      // Not worth interrupting the user over
+      logger.log(Level.WARNING, "Property Store Error", e);
+    }
+  }
+
+  @FXML
+  void manageGames(ActionEvent event)
+  {
+    openGameManager();
   }
 
   @FXML

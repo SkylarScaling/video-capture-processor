@@ -18,7 +18,7 @@ java --enable-native-access=javafx.graphics -p "target/video-capture-processor-1
 
 The app is a Java module (`module-info.java`) and runs on the **module path**, which is how JavaFX is supported. `mvn package` copies the runtime dependencies into `target/modules`, so run the command above from the project folder. The JavaFX jars copied there are the Windows ones; on another OS, change the `win` classifier in `pom.xml`.
 
-In Eclipse, run the shared `video-capture-processor.launch` configuration (Run → Run Configurations → Java Application → video-capture-processor). It starts `VideoCaptureProcessor` with the project folder as the working directory, so it uses the project's `CapProcConfig.xml`.
+In Eclipse, run the shared Maven Build configuration `video-capture-processor (javafx run)` (it runs `javafx:run` with the project folder as the working directory, so it uses the project's `CapProcConfig.xml`). A plain Java Application launch cannot put the dependencies on the module path.
 
 Run the tests with `mvn test`. To run one test: `mvn test -Dtest=FileMoveTaskTest`.
 
@@ -50,10 +50,12 @@ Working:
 - **Game manager** (the **Manage Games...** button at the bottom of the game selector): lists your games with their icons, filename labels and whether each is displayed. Add, edit, delete (after confirming), reorder with the arrows, and click a game to show or hide it. Games are saved to `SavedGames.xml` as soon as you change them, in the same format as the Swing app. The editor takes a title (unique), an optional filename label (letters, numbers, dashes, underscores and periods) and an icon, which is scaled to fit 64×64 and stored in `images/`. A game whose icon file is missing shows a default icon.
 - **Hotkeys:** **F1** presses Keepers, **F2** presses Clips and **F3** presses Mark Clip, anywhere in the main window (including while typing a label). A button flashes briefly whenever it is used. A hotkey does nothing while its button is disabled, for example during a file move.
 - **Progress and closing:** while a move or cleanup runs, a thin progress bar at the bottom of the window shows how far along it is (it fills file by file, and stays animated until the first file is done and during cleanup), and the status line says what is happening. If you close the window during that, the app asks **Close Anyway** or **Cancel**. Closing anyway lets the work finish in the background, but you will not be told whether it succeeded.
+- **Menu bar:** **File** has **Always On Top** (Ctrl+A) and **Set Folders...** (opens Settings), **Games** has **Show Game Selector** (Ctrl+S) and **Manage Games...** (Ctrl+G). Alt plus the underlined letter opens a menu. Always On Top applies at once and is remembered. While a text box has focus, Ctrl+A selects its text instead.
+- **Log file:** problems are logged to `logs/CapProc.log` in the working directory (as well as the console), with stack traces. A log over 1 MB is set aside as `CapProc.log.1` the next time the app starts. Look there first if something goes wrong.
 
 Known issues and gaps:
 
-- Not yet ported from the Swing app: the menu bar and its Ctrl shortcuts, and a log file. See FEATURE_PARITY.md.
+- Every Swing feature is ported. FEATURE_PARITY.md lists ideas that go beyond it (the E items).
 
 ## Project layout
 

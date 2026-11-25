@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.input.KeyCodeCombination?>
 <?import com.wheezy.apps.vidcapproc.ui.elements.GameSelectorButton?>
 <?import com.wheezy.apps.vidcapproc.ui.elements.GameSelectorPanel?>
 <?import javafx.scene.layout.HBox?>
@@ -18,7 +23,37 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wheezy.apps.vidcapproc.controller.VideoCaptureProcessorController">
+<VBox style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wheezy.apps.vidcapproc.controller.VideoCaptureProcessorController">
+	<children>
+<MenuBar fx:id="menuBar">
+	<menus>
+		<Menu mnemonicParsing="true" text="_File">
+			<items>
+				<CheckMenuItem fx:id="alwaysOnTopMenuItem" mnemonicParsing="true" onAction="#toggleAlwaysOnTop" text="_Always On Top">
+					<accelerator>
+						<KeyCodeCombination alt="UP" code="A" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+					</accelerator>
+				</CheckMenuItem>
+				<MenuItem fx:id="setFoldersMenuItem" mnemonicParsing="true" onAction="#openSettingsDialog" text="_Set Folders..." />
+			</items>
+		</Menu>
+		<Menu mnemonicParsing="true" text="_Games">
+			<items>
+				<CheckMenuItem fx:id="showGameSelectorMenuItem" mnemonicParsing="true" text="_Show Game Selector">
+					<accelerator>
+						<KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+					</accelerator>
+				</CheckMenuItem>
+				<MenuItem fx:id="manageGamesMenuItem" mnemonicParsing="true" onAction="#manageGames" text="_Manage Games...">
+					<accelerator>
+						<KeyCodeCombination alt="UP" code="G" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+					</accelerator>
+				</MenuItem>
+			</items>
+		</Menu>
+	</menus>
+</MenuBar>
+<HBox style="-fx-background-color: white;">
 	<children>
 <AnchorPane minWidth="277.0" prefHeight="320.0" prefWidth="277.0" style="-fx-background-color: white;">
 	<children>
@@ -117,3 +152,5 @@
 <GameSelectorPanel fx:id="gameSelectorPanel" />
 	</children>
 </HBox>
+	</children>
+</VBox>
