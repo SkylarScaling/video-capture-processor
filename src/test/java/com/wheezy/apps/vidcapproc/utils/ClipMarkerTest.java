@@ -74,4 +74,22 @@ public class ClipMarkerTest
         () -> ClipMarker.mark("2024-05-17 20-14-06", clipsDir, "", START.minusSeconds(1)));
     assertEquals("nothing written", 0, clipsDir.list().length);
   }
+
+  @Test
+  public void parsesTheOtherCaptureNameFormats()
+  {
+    assertEquals(START, ClipMarker.parseCaptureStart("2024_5_17_20_14_6"));
+    assertEquals(START, ClipMarker.parseCaptureStart("20240517201406"));
+  }
+
+  @Test
+  public void aChosenFormatIsTheOnlyOneAccepted() throws Exception
+  {
+    File clipsDir = new File(temp.getRoot(), "clips");
+    LocalDateTime now = START.plusSeconds(95);
+
+    assertEquals("1:35", ClipMarker.mark("20240517201406", clipsDir, null, now, CaptureNameFormat.LIVE_GAMER_PORTABLE));
+    assertThrows(DateTimeParseException.class,
+        () -> ClipMarker.mark("2024-05-17 20-14-06", clipsDir, null, now, CaptureNameFormat.LIVE_GAMER_PORTABLE));
+  }
 }

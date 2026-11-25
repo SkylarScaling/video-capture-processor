@@ -120,15 +120,23 @@ These were never built in Swing. They are recorded here so they can be taken up,
 
 - [x] **E1.** Check that a capture file is not still open (held by the recorder) before moving it.
   - Port notes: done (`FileInUse`, used by `FileMoveTask.moveCapture`). Before anything is moved, each capture file is renamed to a temporary name and straight back, which is exactly what a move needs and fails on Windows while the recorder has the file open. If any is open nothing is moved, no folder is created, and the dialog says the file is still open and asks whether it is still recording. Cleanup's **Save Clips First** gets the same check, so a clip still being recorded stops the cleanup before anything is deleted. Other operating systems allow renaming open files, so there the check finds nothing.
-- [ ] **E2.** Choose the capture filename format from a menu (today only `yyyy-MM-dd HH-mm-ss` works; Swing's code also mentions `yyyy_M_d_H_m_s`, Live Gamer Portable `yyyyMMddHHmmss`, and OBS).
-- [ ] **E3.** Put keepers and clips into per-game folders.
-- [ ] **E4.** Faster file movement (native copy).
+- [x] **E2.** Choose the capture filename format from a menu (today only `yyyy-MM-dd HH-mm-ss` works; Swing's code also mentions `yyyy_M_d_H_m_s`, Live Gamer Portable `yyyyMMddHHmmss`, and OBS).
+  - Port notes: done (`CaptureNameFormat`). Settings has a **Capture file names** list: *Detect automatically* (the default, which tries every format below), *OBS* (`yyyy-MM-dd HH-mm-ss`), *Underscores* (`yyyy_M_d_H_m_s`) and *Live Gamer Portable* (`yyyyMMddHHmmss`). Only Mark Clip reads names this way. If a name does not fit, the error says which format was expected. Adding a format is one line in the enum.
+- [x] **E3.** Put keepers and clips into per-game folders.
+  - Port notes: done (`GameFolders`), as an option that is **off by default**: Settings has *Keep each game's keepers and clips in its own folder*. When on and a game is selected, Keepers and Clips save to `<folder>/<game title>/` (unsafe characters become underscores, as for labels), and Cleanup's Save Clips First does the same. With no game selected they save straight into the folder. The game folder is created by the move and removed again if the move fails.
+- [x] **E4.** Faster file movement (native copy).
+  - Port notes: **decided: nothing to change.** On one drive a move is a rename, which is instant. Between drives it falls back to `Files.move`, which on Windows hands the copy to the operating system, so there is no slower Java copy loop to replace. I did not time a large cross-drive move. A progress bar for a long cross-drive copy would be a separate feature.
 - [ ] **E5.** Write timestamp tags into the MP4 metadata, like GoPro.
+  - Port notes: **not done, by decision.** It means rewriting the user's recordings, which this app deliberately never does, and a mistake would corrupt a video. What it would be for (a start time in the file) is already in the file name, and Mark Clip uses that. Worth revisiting only with a clear need and a safe MP4 library.
 - [x] **E6.** Show the selected game's icon when the game selector is collapsed. Done: the game button on the main window always shows the selected game's icon.
 - [ ] **E7.** "Game mode" support for game labels.
+  - Port notes: **not done: undefined.** Swing's list has only this one line and its code has nothing behind it. It needs a definition from you first, for example separate labels per mode (ranked, casual) chosen from the game's right-click menu.
 - [ ] **E8.** A clip manager, with other video formats and a built-in video player for review.
+  - Port notes: **not done: a project of its own.** JavaFX's media player handles few formats (not the MKV or MOV files recorders often make), so a review player would need a separate library, and the clip manager needs a design for what it lists and edits. Best started as its own task.
 - [ ] **E9.** Built-in image search to help find game icons.
-- [ ] **E10.** System tray icon.
+  - Port notes: **not done, by decision.** It needs an image search service, which means an API key or scraping a web page that can change or break, and sending game names to a third party. The game editor's file chooser already takes any PNG, JPG, GIF or BMP.
+- [x] **E10.** System tray icon.
+  - Port notes: done (`MainWindowTray`). The icon shows in the notification area with the app's icon. Clicking it restores the window if it is minimized and brings it to the front. Its right-click menu has **Keepers**, **Clips**, **Mark Clip** and **Exit** (Exit asks the same "Close Anyway" question as the close button when work is running). Closing the window still ends the app and removes the icon. **Decision:** no minimize-to-tray, since hiding the window would need the app to stay alive with no window. Not tried on screen: only the menu and the restore were tested.
 
 ---
 

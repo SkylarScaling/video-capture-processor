@@ -1,6 +1,8 @@
 package com.wheezy.apps.vidcapproc;
 
+import com.wheezy.apps.vidcapproc.controller.VideoCaptureProcessorController;
 import com.wheezy.apps.vidcapproc.ui.VideoCaptureProcessorResources;
+import com.wheezy.apps.vidcapproc.ui.MainWindowTray;
 import com.wheezy.apps.vidcapproc.ui.WindowSettings;
 import com.wheezy.apps.vidcapproc.ui.components.VideoCaptureProcessorStage;
 import com.wheezy.apps.vidcapproc.utils.AppLogging;
@@ -38,6 +40,11 @@ public class VideoCaptureProcessor extends Application
       mainStage.setOnHiding(event -> WindowSettings.rememberPosition(mainStage, props));
 
       primaryStage.show();
+
+      VideoCaptureProcessorController controller = (VideoCaptureProcessorController) ((VideoCaptureProcessorStage) primaryStage)
+          .getController();
+      MainWindowTray.install(primaryStage, controller::triggerKeepers, controller::triggerClips,
+          controller::triggerMarkClip);
     }
     catch (Exception e)
     {

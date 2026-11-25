@@ -220,6 +220,22 @@ public class VideoCaptureProcessorController extends FXMLController
     scene.getAccelerators().put(new KeyCodeCombination(KeyCode.F3), markClipButton::fire);
   }
 
+  /** Presses Keepers, Clips or Mark Clip as if clicked (for the tray icon); does nothing while the button is disabled. */
+  public void triggerKeepers()
+  {
+    keepersButton.fire();
+  }
+
+  public void triggerClips()
+  {
+    clipsButton.fire();
+  }
+
+  public void triggerMarkClip()
+  {
+    markClipButton.fire();
+  }
+
   @FXML
   void saveKeeper(ActionEvent event)
   {

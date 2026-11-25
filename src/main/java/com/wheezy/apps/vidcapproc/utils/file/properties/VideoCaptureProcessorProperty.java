@@ -10,7 +10,9 @@ public enum VideoCaptureProcessorProperty
   GAME_SELECTOR_VISIBLE_PROPERTY("GameSelectorShow"),
   SELECTED_GAME_PROPERTY("SelectedGame"),
   FRAME_LOCATION_X_PROPERTY("FrameLocationX"),
-  FRAME_LOCATION_Y_PROPERTY("FrameLocationY");
+  FRAME_LOCATION_Y_PROPERTY("FrameLocationY"),
+  CAPTURE_NAME_FORMAT_PROPERTY("CaptureNameFormat"),
+  GAME_FOLDERS_PROPERTY("GameFolders");
 
   private String name;
 

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 import com.wheezy.utils.file.FileUtility;
@@ -23,20 +22,22 @@ public final class ClipMarker
   public static final String CLIPS_DIRECTORY = "clips";
   public static final String CLIPS_FILE_EXTENSION = ".clips";
 
-  /** Capture filename format (without extension), e.g. "2024-05-17 20-14-06" (OBS style). */
-  static final DateTimeFormatter CAPTURE_NAME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss");
-
   private ClipMarker()
   {
   }
 
   /**
    * @param captureName capture filename without extension
-   * @throws DateTimeParseException if the name is not in {@link #CAPTURE_NAME_FORMAT}
+   * @throws DateTimeParseException if the name is not in a known format (see {@link CaptureNameFormat})
    */
   public static LocalDateTime parseCaptureStart(String captureName)
   {
-    return LocalDateTime.parse(captureName, CAPTURE_NAME_FORMAT);
+    return parseCaptureStart(captureName, CaptureNameFormat.AUTOMATIC);
+  }
+
+  public static LocalDateTime parseCaptureStart(String captureName, CaptureNameFormat format)
+  {
+    return format.parse(captureName);
   }
 
   /** Formats an elapsed time as minutes:seconds, e.g. 75 minutes 3 seconds is "75:03". */
@@ -63,7 +64,13 @@ public final class ClipMarker
    */
   public static String mark(String captureName, File clipsDir, String label, LocalDateTime now) throws IOException
   {
-    Duration elapsed = Duration.between(parseCaptureStart(captureName), now);
+    return mark(captureName, clipsDir, label, now, CaptureNameFormat.AUTOMATIC);
+  }
+
+  public static String mark(String captureName, File clipsDir, String label, LocalDateTime now,
+      CaptureNameFormat format) throws IOException
+  {
+    Duration elapsed = Duration.between(parseCaptureStart(captureName, format), now);
     if (elapsed.isNegative())
     {
       throw new IllegalArgumentException("Capture start time is in the future: " + captureName);

@@ -1,5 +1,6 @@
 package com.wheezy.apps.vidcapproc.utils.file.properties;
 
+import com.wheezy.apps.vidcapproc.utils.CaptureNameFormat;
 import com.wheezy.utils.file.properties.PropertiesUtility;
 
 public class VideoCaptureProcessorProperties extends PropertiesUtility
@@ -22,6 +23,18 @@ public class VideoCaptureProcessorProperties extends PropertiesUtility
   {
     String value = getProperty(VideoCaptureProcessorProperty.ALWAYS_ON_TOP_PROPERTY);
     return value == null || Boolean.parseBoolean(value);
+  }
+
+  /** How capture files are named, for reading their start time. Detected automatically until chosen. */
+  public CaptureNameFormat getCaptureNameFormat()
+  {
+    return CaptureNameFormat.fromSetting(getProperty(VideoCaptureProcessorProperty.CAPTURE_NAME_FORMAT_PROPERTY));
+  }
+
+  /** Whether each game gets its own folder inside Keepers and Clips. Off until chosen. */
+  public boolean isGameFolders()
+  {
+    return Boolean.parseBoolean(getProperty(VideoCaptureProcessorProperty.GAME_FOLDERS_PROPERTY));
   }
 
   public VideoCaptureProcessorProperties()

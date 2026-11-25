@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import com.wheezy.apps.vidcapproc.utils.CaptureNameFormat;
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperties;
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperty;
 import com.wheezy.components.FXMLController;
@@ -39,6 +41,10 @@ public class VideoCaptureProcessorSettingsController extends FXMLController
   private Button clipsDirButton;
   @FXML
   private CheckBox alwaysOnTopCheckBox;
+  @FXML
+  private ComboBox<CaptureNameFormat> captureNameFormatComboBox;
+  @FXML
+  private CheckBox gameFoldersCheckBox;
 
   @Override
   public void initialize(URL location, ResourceBundle resources)
@@ -49,6 +55,9 @@ public class VideoCaptureProcessorSettingsController extends FXMLController
     keepersTextField.setText(propertiesInstance.getProperty(VideoCaptureProcessorProperty.KEEPERS_LOCATION_PROPERTY));
     clipsTextField.setText(propertiesInstance.getProperty(VideoCaptureProcessorProperty.CLIPS_LOCATION_PROPERTY));
     alwaysOnTopCheckBox.setSelected(propertiesInstance.isAlwaysOnTop());
+    captureNameFormatComboBox.getItems().setAll(CaptureNameFormat.values());
+    captureNameFormatComboBox.setValue(propertiesInstance.getCaptureNameFormat());
+    gameFoldersCheckBox.setSelected(propertiesInstance.isGameFolders());
   }
 
   @FXML
@@ -126,17 +135,37 @@ public class VideoCaptureProcessorSettingsController extends FXMLController
   @FXML
   void saveSettings(ActionEvent event)
   {
+    applyToProperties();
+    close(event);
+  }
+
+  /** A folder field that was never filled in holds null, which the settings cannot store. */
+  private static String textOf(TextField field)
+  {
+    return field.getText() == null ? "" : field.getText();
+  }
+
+  /** Stores what the dialog shows. */
+  boolean applyToProperties()
+  {
     propertiesInstance.setProperty(VideoCaptureProcessorProperty.CAPTURE_LOCATION_PROPERTY,
-        captureTextField.getText());
+        textOf(captureTextField));
 
     propertiesInstance.setProperty(VideoCaptureProcessorProperty.KEEPERS_LOCATION_PROPERTY,
-        keepersTextField.getText());
+        textOf(keepersTextField));
 
     propertiesInstance.setProperty(VideoCaptureProcessorProperty.CLIPS_LOCATION_PROPERTY,
-        clipsTextField.getText());
+        textOf(clipsTextField));
 
     propertiesInstance.setProperty(VideoCaptureProcessorProperty.ALWAYS_ON_TOP_PROPERTY,
         Boolean.toString(alwaysOnTopCheckBox.isSelected()));
+
+    CaptureNameFormat format = captureNameFormatComboBox.getValue();
+    propertiesInstance.setProperty(VideoCaptureProcessorProperty.CAPTURE_NAME_FORMAT_PROPERTY,
+        (format == null ? CaptureNameFormat.AUTOMATIC : format).name());
+
+    propertiesInstance.setProperty(VideoCaptureProcessorProperty.GAME_FOLDERS_PROPERTY,
+        Boolean.toString(gameFoldersCheckBox.isSelected()));
 
     try
     {
@@ -149,8 +178,8 @@ public class VideoCaptureProcessorSettingsController extends FXMLController
           ioe.getMessage());
 
       logger.log(Level.SEVERE, "Property Save Error", ioe);
+      return false;
     }
-
-    close(event);
+    return true;
   }
 }

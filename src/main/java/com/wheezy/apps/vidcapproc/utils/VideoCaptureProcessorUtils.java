@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.wheezy.apps.vidcapproc.data.Game;
 import com.wheezy.apps.vidcapproc.data.GameSelection;
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperties;
 import com.wheezy.apps.vidcapproc.utils.file.properties.VideoCaptureProcessorProperty;
@@ -72,7 +73,7 @@ public class VideoCaptureProcessorUtils
     String captureName = FileUtility.getFilename(newFile, false);
     // With a game selected, its label comes first: <game label>_<filename label>_<original name>
     String newName = CaptureNaming.buildName(selectedGameLabel(), filenameLabel, captureName);
-    FileMoveTask task = new FileMoveTask(captureName, newName, captureDir, new File(destLocation),
+    FileMoveTask task = new FileMoveTask(captureName, newName, captureDir, destinationFor(props, new File(destLocation)),
         new File(ClipMarker.CLIPS_DIRECTORY));
 
     task.setOnSucceeded(event ->
@@ -184,7 +185,7 @@ public class VideoCaptureProcessorUtils
               "Set the clips directory in Settings first. Nothing was deleted.");
           return null;
         }
-        saveDir = new File(clipsLocation);
+        saveDir = destinationFor(props, new File(clipsLocation));
       }
     }
 
@@ -216,6 +217,13 @@ public class VideoCaptureProcessorUtils
 
     new Thread(task, "file-cleanup").start();
     return task;
+  }
+
+  /** The Keepers or Clips folder, or the selected game's folder inside it when games have their own. */
+  private static File destinationFor(VideoCaptureProcessorProperties props, File base)
+  {
+    Game game = GameSelection.getInstance().getSelectedGame();
+    return GameFolders.resolve(base, game == null ? null : game.getGameTitle(), props.isGameFolders());
   }
 
   /** @return the filename label of the selected game, or null if no game is selected or it has no label */
@@ -258,15 +266,17 @@ public class VideoCaptureProcessorUtils
     }
 
     String captureName = FileUtility.getFilename(captureFile, false);
+    CaptureNameFormat format = VideoCaptureProcessorProperties.getInstance().getCaptureNameFormat();
     try
     {
-      return ClipMarker.mark(captureName, new File(ClipMarker.CLIPS_DIRECTORY), label, LocalDateTime.now());
+      return ClipMarker.mark(captureName, new File(ClipMarker.CLIPS_DIRECTORY), label, LocalDateTime.now(),
+          format);
     }
     catch (DateTimeParseException | IllegalArgumentException e)
     {
       logger.log(Level.WARNING, "Clip Date Parsing Error", e);
       AlertDialog.displayErrorDialog("Clip Parsing Error", "This clip cannot be marked.",
-          "Unable to get a start time from the capture file name (expected yyyy-MM-dd HH-mm-ss):\n"
+          "Unable to get a start time from the capture file name (expected " + format.expected() + "):\n"
               + captureFile.getName());
     }
     catch (IOException e)
