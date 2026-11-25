@@ -118,7 +118,8 @@ Tracks what the original Swing app ([`VideoCaptureProcessor`](https://github.com
 
 These were never built in Swing. They are recorded here so they can be taken up, or dropped, deliberately.
 
-- [ ] **E1.** Check that a capture file is not still open (held by the recorder) before moving it.
+- [x] **E1.** Check that a capture file is not still open (held by the recorder) before moving it.
+  - Port notes: done (`FileInUse`, used by `FileMoveTask.moveCapture`). Before anything is moved, each capture file is renamed to a temporary name and straight back, which is exactly what a move needs and fails on Windows while the recorder has the file open. If any is open nothing is moved, no folder is created, and the dialog says the file is still open and asks whether it is still recording. Cleanup's **Save Clips First** gets the same check, so a clip still being recorded stops the cleanup before anything is deleted. Other operating systems allow renaming open files, so there the check finds nothing.
 - [ ] **E2.** Choose the capture filename format from a menu (today only `yyyy-MM-dd HH-mm-ss` works; Swing's code also mentions `yyyy_M_d_H_m_s`, Live Gamer Portable `yyyyMMddHHmmss`, and OBS).
 - [ ] **E3.** Put keepers and clips into per-game folders.
 - [ ] **E4.** Faster file movement (native copy).

@@ -118,11 +118,35 @@ public class FileMoveTask extends Task<FileMoveTask.Result>
   static Result moveCapture(String filename, String newFilename, File captureDir, File destDir, File clipsDir,
       ProgressSink progress, Mover mover) throws IOException
   {
+    return moveCapture(filename, newFilename, captureDir, destDir, clipsDir, progress, mover, FileInUse::isInUse);
+  }
+
+  /** Tells whether another program has a file open. Replaceable so tests need no locked file. */
+  @FunctionalInterface
+  interface InUseCheck
+  {
+    boolean isInUse(File file) throws IOException;
+  }
+
+  static Result moveCapture(String filename, String newFilename, File captureDir, File destDir, File clipsDir,
+      ProgressSink progress, Mover mover, InUseCheck inUse) throws IOException
+  {
     File[] captureFiles = FileUtility.getListOfFilesInDirectory(captureDir.getAbsolutePath(), filename);
     if (captureFiles == null || captureFiles.length == 0)
     {
       return new Result(FileUtilityReturnCode.FILE_DOES_NOT_EXIST,
           "No files starting with '" + filename + "' in " + captureDir.getAbsolutePath());
+    }
+
+    // A recording still being written must not be moved: the end would be lost, or the move would fail half way
+    for (File srcFile : captureFiles)
+    {
+      if (inUse.isInUse(srcFile))
+      {
+        logger.warning("Not moving " + filename + ": " + srcFile + " is still open in another program");
+        return new Result(FileUtilityReturnCode.FILE_IN_USE,
+            srcFile.getName() + ": is it still recording?");
+      }
     }
 
     List<Step> steps = new ArrayList<>();

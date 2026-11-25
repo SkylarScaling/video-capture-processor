@@ -297,4 +297,73 @@ public class FileMoveTaskTest
     assertTrue(result.detail(), result.detail().contains("could not be put back"));
     assertTrue("it is left where it can be found", new File(dest, files[0].getName()).exists());
   }
+
+  @Test
+  public void refusesToMoveACaptureThatIsStillOpen() throws Exception
+  {
+    File captureDir = capture("game3.mp4", "game3.txt");
+    File dest = temp.newFolder("keepers");
+
+    FileMoveTask.Result result = FileMoveTask.moveCapture("game3", "game3", captureDir, dest, null, null,
+        com.wheezy.utils.file.FileUtility::moveFiles, file -> file.getName().equals("game3.mp4"));
+
+    assertEquals(FileUtilityReturnCode.FILE_IN_USE, result.code());
+    assertTrue(result.detail(), result.detail().contains("game3.mp4"));
+    assertTrue("nothing moved", new File(captureDir, "game3.mp4").exists());
+    assertTrue("nothing moved", new File(captureDir, "game3.txt").exists());
+    assertEquals(0, dest.list().length);
+  }
+
+  @Test
+  public void doesNotCreateTheDestinationWhenACaptureIsStillOpen() throws Exception
+  {
+    File captureDir = capture("game3.mp4");
+    File dest = new File(temp.getRoot(), "keepers");
+
+    FileMoveTask.Result result = FileMoveTask.moveCapture("game3", "game3", captureDir, dest, null, null,
+        com.wheezy.utils.file.FileUtility::moveFiles, file -> true);
+
+    assertEquals(FileUtilityReturnCode.FILE_IN_USE, result.code());
+    assertFalse(dest.exists());
+  }
+
+  @Test
+  public void aFileNobodyHasOpenIsNotInUseAndKeepsItsName() throws Exception
+  {
+    File file = new File(temp.newFolder("capture"), "game3.mp4");
+    Files.writeString(file.toPath(), "video");
+
+    assertFalse(FileInUse.isInUse(file));
+
+    assertEquals("video", Files.readString(file.toPath()));
+    assertEquals("no probe file left behind", 1, file.getParentFile().list().length);
+  }
+
+  @Test
+  public void aMissingFileIsNotInUse() throws Exception
+  {
+    assertFalse(FileInUse.isInUse(new File(temp.getRoot(), "nothing.mp4")));
+  }
+
+  /** Windows refuses to rename a file another program holds open (a FileInputStream holds it that way). */
+  @Test
+  public void aFileAnotherProgramHoldsOpenIsInUse() throws Exception
+  {
+    org.junit.Assume.assumeTrue(System.getProperty("os.name").toLowerCase().contains("win"));
+    File captureDir = capture("game3.mp4");
+    File file = new File(captureDir, "game3.mp4");
+    File dest = temp.newFolder("keepers");
+
+    try (java.io.FileInputStream held = new java.io.FileInputStream(file))
+    {
+      assertTrue(FileInUse.isInUse(file));
+
+      FileMoveTask.Result result = FileMoveTask.moveCapture("game3", "game3", captureDir, dest, null, null);
+      assertEquals(FileUtilityReturnCode.FILE_IN_USE, result.code());
+      assertTrue(held.available() >= 0);
+    }
+
+    assertTrue("once released it moves", FileMoveTask.moveCapture("game3", "game3", captureDir, dest, null, null)
+        .succeeded());
+  }
 }
